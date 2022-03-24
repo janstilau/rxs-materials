@@ -1,0 +1,16 @@
+PODS:
+  - Koober_iOS (0.1.0)
+
+DEPENDENCIES:
+  - Koober_iOS (from `../`)
+
+EXTERNAL SOURCES:
+  Koober_iOS:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Koober_iOS: 60711c1ca1b3fef9e62458aff22ad43d3af4e2bf
+
+PODFILE CHECKSUM: 46ac9f33e575882cb56eb52d914b482d1287401e
+
+COCOAPODS: 1.11.2

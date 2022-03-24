@@ -1,0 +1,36 @@
+{
+  "name": "KooberKit",
+  "version": "0.1.0",
+  "summary": "A short description of KooberKit.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/janstilau/KooberKit",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "janstilau": "janstilau@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/janstilau/KooberKit.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source_files": "KooberKit/Classes/**/*",
+  "dependencies": {
+    "PromiseKit": [
+      "6.8.4"
+    ],
+    "RxSwift": [
+      "4.5.0"
+    ],
+    "RxCocoa": [
+      "4.5.0"
+    ],
+    "Kingfisher": [
+      "5.3.1"
+    ]
+  }
+}
