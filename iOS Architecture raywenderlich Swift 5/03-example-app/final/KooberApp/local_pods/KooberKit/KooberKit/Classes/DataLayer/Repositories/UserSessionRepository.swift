@@ -8,6 +8,10 @@ import PromiseKit
  */
 public protocol UserSessionRepository {
     
+    /*
+     Promise 代表的是 Fullfil, Reject
+     对于 UserSession 这种数据, 读取不到是正常的现象, 应该算作是 Fullfil 才对. 
+     */
     func readUserSession() -> Promise<UserSession?>
     func signUp(newAccount: NewAccount) -> Promise<UserSession>
     func signIn(email: String, password: String) -> Promise<UserSession>
