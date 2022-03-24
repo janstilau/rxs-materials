@@ -1,0 +1,6 @@
+framework module KooberUIKit {
+  umbrella header "KooberUIKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

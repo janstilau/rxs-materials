@@ -1,0 +1,16 @@
+PODS:
+  - KooberUIKit (0.1.0)
+
+DEPENDENCIES:
+  - KooberUIKit (from `../`)
+
+EXTERNAL SOURCES:
+  KooberUIKit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  KooberUIKit: 0ed9ee9288663fda4eb835332a063824297e972e
+
+PODFILE CHECKSUM: bca7c6740e04d7e639a0cbdd0e6146e72e40d6d3
+
+COCOAPODS: 1.11.2

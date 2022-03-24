@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'KooberUIKit_Example' do
+  pod 'KooberUIKit', :path => '../'
+
+  target 'KooberUIKit_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

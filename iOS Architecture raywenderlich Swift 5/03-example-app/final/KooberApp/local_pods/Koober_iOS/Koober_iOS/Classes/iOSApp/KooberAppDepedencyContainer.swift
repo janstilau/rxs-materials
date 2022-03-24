@@ -12,6 +12,7 @@ public class KooberAppDependencyContainer {
     
     // MARK: - Methods
     public init() {
+        
         func makeUserSessionRepository() -> UserSessionRepository {
             let dataStore = makeUserSessionDataStore()
             let remoteAPI = makeAuthRemoteAPI()
@@ -20,6 +21,7 @@ public class KooberAppDependencyContainer {
         }
         
         func makeUserSessionDataStore() -> UserSessionDataStore {
+            
 #if USER_SESSION_DATASTORE_FILEBASED
             return FileUserSessionDataStore()
             
@@ -48,6 +50,12 @@ public class KooberAppDependencyContainer {
             return MainViewModel()
         }
         
+        
+        
+        /*
+         在这个库里面, 将所有的 Init 方法, 写在了一起. 最后调用一个函数, 进行数据层的初始化的工作.
+         一般不会这样写代码.
+         */
         self.sharedUserSessionRepository = makeUserSessionRepository()
         self.sharedMainViewModel = makeMainViewModel()
     }

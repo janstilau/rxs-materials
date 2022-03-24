@@ -1,5 +1,23 @@
 PODS:
   - Kingfisher (5.3.1)
+  - Koober_iOS (0.1.0):
+    - Kingfisher (= 5.3.1)
+    - KooberKit
+    - KooberUIKit
+    - PromiseKit (= 6.8.4)
+    - RxCocoa (= 4.5.0)
+    - RxSwift (= 4.5.0)
+  - KooberKit (0.1.0):
+    - Kingfisher (= 5.3.1)
+    - PromiseKit (= 6.8.4)
+    - RxCocoa (= 4.5.0)
+    - RxSwift (= 4.5.0)
+  - KooberUIKit (0.1.0):
+    - Kingfisher (= 5.3.1)
+    - KooberKit
+    - PromiseKit (= 6.8.4)
+    - RxCocoa (= 4.5.0)
+    - RxSwift (= 4.5.0)
   - PromiseKit (6.8.4):
     - PromiseKit/CorePromise (= 6.8.4)
     - PromiseKit/Foundation (= 6.8.4)
@@ -15,6 +33,9 @@ PODS:
 
 DEPENDENCIES:
   - Kingfisher (= 5.3.1)
+  - Koober_iOS (from `local_pods/Koober_iOS`)
+  - KooberKit (from `local_pods/KooberKit`)
+  - KooberUIKit (from `local_pods/KooberUIKit`)
   - PromiseKit (= 6.8.4)
   - RxCocoa (= 4.5.0)
   - RxSwift (= 4.5.0)
@@ -26,12 +47,23 @@ SPEC REPOS:
     - RxCocoa
     - RxSwift
 
+EXTERNAL SOURCES:
+  Koober_iOS:
+    :path: local_pods/Koober_iOS
+  KooberKit:
+    :path: local_pods/KooberKit
+  KooberUIKit:
+    :path: local_pods/KooberUIKit
+
 SPEC CHECKSUMS:
   Kingfisher: d9e7e0b209b59b8f9873aa2f37654e81a7beea51
+  Koober_iOS: 939aeac4849a9c75dac9e00747264860457ec685
+  KooberKit: 2396766cfa74ee02c526e551d10d57e8d8b75f8a
+  KooberUIKit: 113d7de6414e441ec7ad3f3558f13bb61f5620d7
   PromiseKit: 51794a832647e7b819336dc2279039ce9f1cc49b
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
 
-PODFILE CHECKSUM: 79f63d03100d87a28afb50cae31adf509d9524d8
+PODFILE CHECKSUM: 06947c61bfb0ab91deb707416a787a6514eea0be
 
 COCOAPODS: 1.11.2
