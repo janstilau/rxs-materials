@@ -31,16 +31,8 @@ public class MainViewController: NiblessViewController {
         self.launchViewController = launchViewController
         self.makeOnboardingViewController = onboardingViewControllerFactory
         self.makeSignedInViewController = signedInViewControllerFactory
+        
         super.init()
-    }
-    
-    func subscribe(to observable: Observable<MainView>) {
-        observable
-            .subscribe(onNext: { [weak self] view in
-                guard let strongSelf = self else { return }
-                strongSelf.present(view)
-            })
-            .disposed(by: disposeBag)
     }
     
     public func present(_ view: MainView) {
@@ -102,13 +94,16 @@ public class MainViewController: NiblessViewController {
         }
     }
     
+    // 一般来说, 是在 ViewDidLoad 中, 做 ViewModel 的信号的绑定的动作.
+    // 这里是监听 ViewModel 的状态变化, 进行指令式的弹出的动作.
     public override func viewDidLoad() {
         super.viewDidLoad()
-        observeViewModel()
-    }
-    
-    private func observeViewModel() {
-        let observable = viewModel.view.distinctUntilChanged()
-        subscribe(to: observable)
+        viewModel.view
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] view in
+                guard let strongSelf = self else { return }
+                strongSelf.present(view)
+            })
+            .disposed(by: disposeBag)
     }
 }

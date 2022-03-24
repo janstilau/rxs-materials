@@ -11,6 +11,9 @@ public class LaunchViewController: NiblessViewController {
     let disposeBag = DisposeBag()
     
     // MARK: - Methods
+    
+    // 内部的 ViewModel, 需要在 Init 中生成, 不直接传入 ViewModel, 而是传入 ViewModel 的工厂类.
+    // 没太明白, 这样做的好处在哪里. 
     init(launchViewModelFactory: LaunchViewModelFactory) {
         self.viewModel = launchViewModelFactory.makeLaunchViewModel()
         super.init()
@@ -41,6 +44,5 @@ public class LaunchViewController: NiblessViewController {
 }
 
 protocol LaunchViewModelFactory {
-    
     func makeLaunchViewModel() -> LaunchViewModel
 }

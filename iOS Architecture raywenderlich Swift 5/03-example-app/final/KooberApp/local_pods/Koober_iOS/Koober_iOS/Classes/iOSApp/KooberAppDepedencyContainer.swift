@@ -15,7 +15,7 @@ public class KooberAppDependencyContainer {
         
         // 通过, 将所有的实际需要的功能类, 接口化, 使得所有需要用到的功能类, 都可以实现依赖注入.
         // 依赖注入有一个前提, 就是面向接口编程. 在被注入的功能实现里面, 使用接口进行方法的调用.
-        // 这样, 通过属性设置, 或者 初始化进行接口对象的替换, 才有意义. 
+        // 这样, 通过属性设置, 或者 初始化进行接口对象的替换, 才有意义.
         func makeUserSessionRepository() -> UserSessionRepository {
             let dataStore = makeUserSessionDataStore()
             let remoteAPI = makeAuthRemoteAPI()
@@ -23,14 +23,10 @@ public class KooberAppDependencyContainer {
                                                remoteAPI: remoteAPI)
         }
         
-        /*
-         
-         */
         func makeUserSessionDataStore() -> UserSessionDataStore {
             
 #if USER_SESSION_DATASTORE_FILEBASED
             return FileUserSessionDataStore()
-            
 #else
             let coder = makeUserSessionCoder()
             return KeychainUserSessionDataStore(userSessionCoder: coder)
