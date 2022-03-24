@@ -74,8 +74,8 @@ public extension Reactive where Base: CLLocationManager {
             .flatMap { _ in self.didUpdateLocations.compactMap(\.first) }
             .take(1)
             .do(onDispose: { [weak base] in base?.stopUpdatingLocation() })
-        
-        base.requestWhenInUseAuthorization()
+                
+                base.requestWhenInUseAuthorization()
                 base.startUpdatingLocation()
                 return location
                 }
