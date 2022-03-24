@@ -14,7 +14,9 @@ class LaunchRootView: NiblessView {
         super.init(frame: frame)
         
         styleView()
-        loadUserSession()
+        // 这里的代码非常烂. 凭什么要让 ViewModel 的 LoadUserSession 放到 View 的 init 方法中.
+        // 这明显就是 Controller 层的事情, 至少也是应该方法 LaunchViewController 中才对.
+//        loadUserSession()
     }
     
     private func styleView() {

@@ -3,7 +3,8 @@ import RxSwift
 
 public typealias OnboardingNavigationAction = NavigationAction<OnboardingView>
 
-public class OnboardingViewModel: GoToSignUpNavigator, GoToSignInNavigator {
+public class OnboardingViewModel: GoToSignUpNavigator,
+                                  GoToSignInNavigator {
     
     // MARK: - Properties
     public var view: Observable<OnboardingNavigationAction> { return _view.asObservable() }

@@ -97,6 +97,7 @@ public class KooberAppDependencyContainer {
     // Onboarding (signed-out)
     // Factories needed to create an OnboardingViewController.
     
+    // 登录界面的生成. 放到了依赖注册类里面了.
     public func makeOnboardingViewController() -> OnboardingViewController {
         let dependencyContainer = KooberOnboardingDependencyContainer(appDependencyContainer: self)
         return dependencyContainer.makeOnboardingViewController()

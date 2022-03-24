@@ -26,6 +26,9 @@ public class LaunchViewController: NiblessViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         observeErrorMessages()
+        // 把 viewModel 的触发, 从 LaunchRootView 的 Init 方法中, 转移到了 VC 中.
+        // 在 VC 中, 调用 ViewModel 的 Model Action, 
+        viewModel.loadUserSession()
     }
     
     func observeErrorMessages() {
