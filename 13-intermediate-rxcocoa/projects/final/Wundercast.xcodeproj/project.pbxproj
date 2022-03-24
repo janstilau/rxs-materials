@@ -107,7 +107,6 @@
 				CB4D69671DE9AD5100DC0488 /* Assets */,
 				CB4D69631DE9AD2A00DC0488 /* Controllers */,
 				CB4D69641DE9AD2A00DC0488 /* Utils */,
-				CB4D69401DE9A7D100DC0488 /* AppDelegate.swift */,
 				CB4D69421DE9A7D100DC0488 /* ViewController.swift */,
 				CB4D69441DE9A7D100DC0488 /* Main.storyboard */,
 				CB4D69471DE9A7D100DC0488 /* Assets.xcassets */,
@@ -129,6 +128,7 @@
 		CB4D69641DE9AD2A00DC0488 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CB4D69401DE9A7D100DC0488 /* AppDelegate.swift */,
 				CB4D696E1DE9C70100DC0488 /* Appearance.swift */,
 				CB4D696F1DE9C70100DC0488 /* Colors.swift */,
 			);

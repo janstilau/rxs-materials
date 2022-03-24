@@ -5,13 +5,8 @@ import CoreLocation
 import MapKit
 
 class ApiController {
+    
     struct Weather: Decodable {
-        let cityName: String
-        let temperature: Int
-        let humidity: Int
-        let icon: String
-        let coordinate: CLLocationCoordinate2D
-        
         static let empty = Weather(
             cityName: "Unknown",
             temperature: -1000,
@@ -19,6 +14,12 @@ class ApiController {
             icon: iconNameToChar(icon: "e"),
             coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)
         )
+        
+        let cityName: String
+        let temperature: Int
+        let humidity: Int
+        let icon: String
+        let coordinate: CLLocationCoordinate2D
         
         init(cityName: String,
              temperature: Int,
@@ -34,6 +35,7 @@ class ApiController {
         
         init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
+            
             cityName = try values.decode(String.self, forKey: .cityName)
             let info = try values.decode([AdditionalInfo].self, forKey: .weather)
             icon = iconNameToChar(icon: info.first?.icon ?? "")
@@ -41,6 +43,7 @@ class ApiController {
             let mainInfo = try values.nestedContainer(keyedBy: MainKeys.self, forKey: .main)
             temperature = Int(try mainInfo.decode(Double.self, forKey: .temp))
             humidity = try mainInfo.decode(Int.self, forKey: .humidity)
+            
             let coordinate = try values.decode(Coordinate.self, forKey: .coordinate)
             self.coordinate = CLLocationCoordinate2D(latitude: coordinate.lat, longitude: coordinate.lon)
         }
@@ -70,14 +73,12 @@ class ApiController {
         }
     }
     
-    /// The shared instance
     static var shared = ApiController()
     
-    /// The api key to communicate with openweathermap.org
-    /// Create you own on https://home.openweathermap.org/users/sign_up
     private let apiKey = "197d815bb621986c704668dde0b27e5d"
     
-    /// API base URL
+    // 这种 BaseURL 的设计, 是一种通用的设计.
+    // 几乎所有的网络请求库, 都使用了这样的一种设计方式.
     let baseURL = URL(string: "http://api.openweathermap.org/data/2.5")!
     
     init() {
@@ -87,13 +88,15 @@ class ApiController {
     }
     
     // MARK: - Api Calls
+    // 通过城市名, 来访问接口, 获取到最新的 Weather 数据
     func currentWeather(for city: String) -> Observable<Weather> {
-        buildRequest(pathComponent: "weather", params: [("q", city)])
+        buildRequest(pathComponent: "weather",
+                     params: [("q", city)])
             .map { data in
                 try JSONDecoder().decode(Weather.self, from: data)
             }
     }
-    
+    // 通过经纬度, 来访问接口, 来获取到最新的 Weather 数据.
     func currentWeather(at coordinate: CLLocationCoordinate2D) -> Observable<Weather> {
         buildRequest(pathComponent: "weather",
                      params: [("lat", "\(coordinate.latitude)"),
@@ -105,14 +108,16 @@ class ApiController {
     
     // MARK: - Private Methods
     
-    /**
-     * Private method to build a request with RxCocoa
-     */
     private func buildRequest(method: String = "GET", pathComponent: String, params: [(String, String)]) -> Observable<Data> {
         let url = baseURL.appendingPathComponent(pathComponent)
         var request = URLRequest(url: url)
         let keyQueryItem = URLQueryItem(name: "appid", value: apiKey)
         let unitsQueryItem = URLQueryItem(name: "units", value: "metric")
+        /*
+         NSURLComponents 这就是一个, 将 URL 进行分割的类.
+         可以传入一个完整的 URL, 通过这个类来获取各个部分的内容.
+         也可以使用这个类, 逐步添加各个部分的内容, 然后获取最终的 URL 数据.
+         */
         let urlComponents = NSURLComponents(url: url, resolvingAgainstBaseURL: true)!
         
         if method == "GET" {
@@ -127,16 +132,14 @@ class ApiController {
             request.httpBody = jsonData
         }
         
+        // 通过 NSURLComponents 来获取添加完各种部件内容后, 最终产生的 URL 数据.
         request.url = urlComponents.url!
         request.httpMethod = method
-        
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
         let session = URLSession.shared
         
         return session.rx.data(request: request)
     }
-    
 }
 
 /**
@@ -185,6 +188,8 @@ private func imageFromText(text: String, font: UIFont) -> UIImage {
 }
 
 extension ApiController.Weather {
+    
+    // 从 Weather 生成一个在 MapView 上显示的过程. 具体不做研究, 都是命令式的代码. 
     func overlay() -> Overlay {
         let coordinates: [CLLocationCoordinate2D] = [
             CLLocationCoordinate2D(latitude: coordinate.latitude - 0.25,
@@ -224,7 +229,6 @@ extension ApiController.Weather {
             let imageReference = imageFromText(text: overlayIcon, font: UIFont(name: "Flaticon", size: 32.0)!).cgImage
             let theMapRect = overlay.boundingMapRect
             let theRect = rect(for: theMapRect)
-            
             context.scaleBy(x: 1.0, y: -1.0)
             context.translateBy(x: 0.0, y: -theRect.size.height)
             context.draw(imageReference!, in: theRect)

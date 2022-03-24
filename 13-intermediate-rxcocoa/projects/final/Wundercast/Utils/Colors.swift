@@ -1,6 +1,7 @@
-
 import Foundation
 import UIKit
+
+// 将, 所有的 Color, 放到一个统一的位置, 根据 App 的实现使用更加业务相关的命名, 这是正确的做法.
 
 public func colorFromDecimalRGB(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat, alpha: CGFloat = 1.0) -> UIColor {
     return UIColor(
@@ -48,5 +49,4 @@ extension UIColor {
     class var textGrey: UIColor {
         return colorFromDecimalRGB(146, 146, 146)
     }
-    
 }

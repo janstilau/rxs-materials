@@ -5,6 +5,7 @@ import RxCocoa
 
 extension CLLocationManager: HasDelegate {}
 
+// 这应该是 RXCocoa 里面的实现, 在这里自己实现了一遍. 
 class RxCLLocationManagerDelegateProxy: DelegateProxy<CLLocationManager, CLLocationManagerDelegate>, DelegateProxyType, CLLocationManagerDelegate {
     
     weak public private(set) var locationManager: CLLocationManager?
@@ -21,6 +22,7 @@ class RxCLLocationManagerDelegateProxy: DelegateProxy<CLLocationManager, CLLocat
 }
 
 public extension Reactive where Base: CLLocationManager {
+    
     var delegate: DelegateProxy<CLLocationManager, CLLocationManagerDelegate> {
         RxCLLocationManagerDelegateProxy.proxy(for: base)
     }
@@ -46,7 +48,6 @@ public extension Reactive where Base: CLLocationManager {
             .flatMap { _ in self.didUpdateLocations.compactMap(\.first) }
             .take(1)
             .do(onDispose: { [weak base] in base?.stopUpdatingLocation() })
-                
                 base.requestWhenInUseAuthorization()
                 base.startUpdatingLocation()
                 return location

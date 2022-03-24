@@ -1,6 +1,9 @@
 import Foundation
 import UIKit
 
+/*
+ 这就是一个 UI 工具类, 不是重点. 
+ */
 public struct Appearance {
     
     // MARK: Component Theming
@@ -9,5 +12,4 @@ public struct Appearance {
         line.backgroundColor = color
         view.addSubview(line)
     }
-    
 }

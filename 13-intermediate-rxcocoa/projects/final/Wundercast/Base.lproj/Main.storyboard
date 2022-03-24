@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -21,16 +19,16 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="City's Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CvG-51-WJq">
-                                <rect key="frame" x="16" y="16" width="343" height="40"/>
+                                <rect key="frame" x="20" y="16" width="560" height="40"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="32"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="search"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="W" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jQQ-9b-2rA">
-                                <rect key="frame" x="32" y="198" width="311" height="311"/>
+                                <rect key="frame" x="32" y="52" width="536" height="536"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="jQQ-9b-2rA" secondAttribute="height" multiplier="1:1" id="idc-9v-mzt"/>
                                 </constraints>
@@ -39,28 +37,28 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="T" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x4a-i8-beX">
-                                <rect key="frame" x="32" y="161" width="15" height="29"/>
+                                <rect key="frame" x="32" y="15" width="15" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="H" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aYm-dp-fOW">
-                                <rect key="frame" x="325.5" y="161" width="17.5" height="29"/>
+                                <rect key="frame" x="550.5" y="15" width="17.5" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fn5-hY-7os">
-                                <rect key="frame" x="32" y="517" width="311" height="39"/>
+                                <rect key="frame" x="32" y="596" width="536" height="39"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <mapView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yBe-im-BiH">
-                                <rect key="frame" x="0.0" y="88" width="375" height="516"/>
+                                <rect key="frame" x="0.0" y="88" width="600" height="449"/>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eDk-er-9Bj">
-                                <rect key="frame" x="16" y="612" width="44" height="44"/>
+                                <rect key="frame" x="20" y="545" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="44" id="4JK-rd-te0"/>
                                     <constraint firstAttribute="height" constant="44" id="k0m-li-SDP"/>
@@ -68,7 +66,7 @@
                                 <state key="normal" image="place-location"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="grA-cI-HFT">
-                                <rect key="frame" x="315" y="612" width="44" height="44"/>
+                                <rect key="frame" x="536" y="545" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="1Tq-Zw-jnE"/>
                                     <constraint firstAttribute="width" constant="44" id="OVx-Jv-Mjr"/>
@@ -76,7 +74,7 @@
                                 <state key="normal" image="map"/>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="XyX-xB-TNS">
-                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <rect key="frame" x="281.5" y="281.5" width="37" height="37"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -110,13 +108,13 @@
                     <connections>
                         <outlet property="activityIndicator" destination="XyX-xB-TNS" id="WD8-wK-O6I"/>
                         <outlet property="cityNameLabel" destination="fn5-hY-7os" id="FJD-r9-Dgm"/>
-                        <outlet property="geoLocationButton" destination="eDk-er-9Bj" id="UaZ-g3-hp7"/>
+                        <outlet property="cityNameTextField" destination="CvG-51-WJq" id="yXf-Qu-AkM"/>
                         <outlet property="humidityLabel" destination="aYm-dp-fOW" id="ACB-jg-cWC"/>
                         <outlet property="iconLabel" destination="jQQ-9b-2rA" id="CFl-ge-t02"/>
-                        <outlet property="mapButton" destination="grA-cI-HFT" id="mie-7g-Pd9"/>
+                        <outlet property="locationBtn" destination="eDk-er-9Bj" id="UaZ-g3-hp7"/>
+                        <outlet property="mapBtn" destination="grA-cI-HFT" id="mie-7g-Pd9"/>
                         <outlet property="mapView" destination="yBe-im-BiH" id="Tka-pS-Fuk"/>
-                        <outlet property="searchCityName" destination="CvG-51-WJq" id="yXf-Qu-AkM"/>
-                        <outlet property="tempLabel" destination="x4a-i8-beX" id="4To-Ng-1e9"/>
+                        <outlet property="temperatureLabel" destination="x4a-i8-beX" id="4To-Ng-1e9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
