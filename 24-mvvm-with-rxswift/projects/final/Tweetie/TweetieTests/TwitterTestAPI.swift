@@ -39,7 +39,12 @@ import RxCocoa
 
 @testable import Tweetie
 
+// 实现接口的意义就在于, 我们可以轻易的 Mock 功能实现.
+// 在项目初始化的时候, 就可以向 objects 里面, 进行数据的初始化工作, 使用本地数据进行 Mock.
+// 一般来说, Mock 的类, 一定要有可以直接进行数据控制的接口, 使得外界可以直接Mock 数据.
+// 然后, 在实现接口的时候, 直接使用这些 Mock 的数据.
 class TwitterTestAPI: TwitterAPIProtocol {
+  
   static func reset() {
     lastMethodCall = nil
     objects = PublishSubject<[JSONObject]>()

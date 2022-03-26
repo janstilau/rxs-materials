@@ -42,6 +42,7 @@ import RxRealm
 @testable import Tweetie
 
 class ListTimelineViewModelTests: XCTestCase {
+  
   private func createViewModel(_ account: Driver<TwitterAccount.AccountStatus>) -> ListTimelineViewModel {
     return ListTimelineViewModel(
       account: account,

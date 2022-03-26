@@ -1,35 +1,3 @@
-/// Copyright (c) 2020 Razeware LLC
-/// 
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
-/// distribute, sublicense, create a derivative work, and/or sell copies of the
-/// Software in any work that is designed, intended, or marketed for pedagogical or
-/// instructional purposes related to programming, coding, application development,
-/// or information technology.  Permission for such use, copying, modification,
-/// merger, publication, distribution, sublicensing, creation of derivative works,
-/// or sale is expressly withheld.
-/// 
-/// This project and source code may use libraries or frameworks that are
-/// released under various Open-Source licenses. Use of those libraries and
-/// frameworks are governed by their own individual licenses.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-
 import Foundation
 import Reachability
 import RxSwift
@@ -40,22 +8,30 @@ extension Reachability {
   }
 }
 
+// 第一次看到了, Static 方法的使用.
 extension Reactive where Base: Reachability {
-
+  
+  // 对于, 类.rx 来说, 可以认为就是在上面定义分类方法.
   static var reachable: Observable<Bool> {
+    
+    // 每次调用 reachable, 其实都是生成了一个新的事件序列.
     return Observable.create { observer in
-
+      
       let reachability = Reachability.forInternetConnection()
-
+      
       if let reachability = reachability {
+        // 首先, 将自己当前的状态传输出去.
         observer.onNext(reachability.isReachable())
+        // 将各个事件的回调, 使用信号的方式, 传输出去.
         reachability.reachableBlock = { _ in observer.onNext(true) }
         reachability.unreachableBlock = { _ in observer.onNext(false) }
         reachability.startNotifier()
       } else {
         observer.onError(Reachability.Errors.unavailable)
       }
-
+      
+      // reachability 的生命周期, 其实是靠 Disposables.create 进行维护的.
+      // 传递的闭包里面, 维护了 reachability 的生命周期, 而这个闭包的生命周期, 会随着 dispose 函数的调用, 被释放掉. 
       return Disposables.create {
         reachability?.stopNotifier()
       }

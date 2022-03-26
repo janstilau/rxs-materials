@@ -1,35 +1,3 @@
-/// Copyright (c) 2020 Razeware LLC
-/// 
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
-/// distribute, sublicense, create a derivative work, and/or sell copies of the
-/// Software in any work that is designed, intended, or marketed for pedagogical or
-/// instructional purposes related to programming, coding, application development,
-/// or information technology.  Permission for such use, copying, modification,
-/// merger, publication, distribution, sublicensing, creation of derivative works,
-/// or sale is expressly withheld.
-/// 
-/// This project and source code may use libraries or frameworks that are
-/// released under various Open-Source licenses. Use of those libraries and
-/// frameworks are governed by their own individual licenses.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-
 import Foundation
 
 import RealmSwift
@@ -38,10 +6,12 @@ import RxRealm
 import RxCocoa
 
 class ListTimelineViewModel {
+  
   private let bag = DisposeBag()
+  
   private let fetcher: TimelineFetcher
-
-  let list: ListIdentifier
+  
+  let list: ListIdentifier // 用户名和密码
   let account: Driver<TwitterAccount.AccountStatus>
   
   // MARK: - Input
@@ -64,14 +34,18 @@ class ListTimelineViewModel {
     self.list = list
     
     // fetch and store tweets
+    // 在, TimelineFetcher 的 init 方法里面, 根据 account 的值, 创建了自己的 Publisher.
+    // 然后这些当做 fetcher 自己的信号源, 在 ViewModel 中直接使用.
+    // 这就是信号的操作. 这样就使得, account 的数据改变引发的信号, 可以出发后面各种各样的业务逻辑.
+    // 也让代码的追踪, 变得很空难 .
     fetcher = TimelineFetcher(account: account, list: list, apiType: apiType)
     bindOutput()
-
+    
     fetcher.timeline
       .subscribe(Realm.rx.add(update: .all))
       .disposed(by: bag)
   }
-
+  
   // MARK: - Methods
   private func bindOutput() {
     // Bind tweets

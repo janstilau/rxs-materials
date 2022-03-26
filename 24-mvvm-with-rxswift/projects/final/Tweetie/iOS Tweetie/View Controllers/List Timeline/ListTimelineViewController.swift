@@ -10,8 +10,8 @@ class ListTimelineViewController: UIViewController {
   @IBOutlet weak var messageView: UIView!
   
   private let bag = DisposeBag()
-  fileprivate var viewModel: ListTimelineViewModel! // ViewModel. 数据和 Controller 的集合体.
-  fileprivate var navigator: Navigator! // Router 的概念.
+  fileprivate var viewModel: ListTimelineViewModel! // ViewModel. 数据和 Controller 的集合体. 外界传递过来的. 
+  fileprivate var navigator: Navigator! // Router 的概念. 外界传递过来的.
   
   static func createWith(navigator: Navigator,
                          storyboard: UIStoryboard,
@@ -36,18 +36,25 @@ class ListTimelineViewController: UIViewController {
   func bindUI() {
     // Bind button to the people view controller
     navigationItem.rightBarButtonItem!.rx.tap
+    // 通过 throttle 这个操作符, 将暴力点击进行了规避.
+    // 如果不用这个操作符, 那么需要特地编写规避暴力点击的逻辑, 是复杂的.
+    // Rx 能够用好的基础, 就是要对 rx 里面, 各个操作符的作用熟悉.
       .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak self] _ in
         guard let self = self else { return }
+        // subscibe 一般就是用来连接指令的.
+        // 如果是 UI, 那么 Drive, 或者 Bindto 这种, 更加的能够显示 UI 的作用.
         self.navigator.show(segue: .listPeople(self.viewModel.account, self.viewModel.list), sender: self)
       })
       .disposed(by: bag)
     
     // Show tweets in table view
     let dataSource = RxTableViewRealmDataSource<Tweet>(cellIdentifier:
-                                                        "TweetCellView", cellType: TweetCellView.self) { cell, _, tweet in
+                                                        "TweetCellView",
+                                                       cellType: TweetCellView.self) { cell, _, tweet in
       cell.update(with: tweet)
     }
+    
     viewModel.tweets
       .bind(to: tableView.rx.realmChanges(dataSource))
       .disposed(by: bag)

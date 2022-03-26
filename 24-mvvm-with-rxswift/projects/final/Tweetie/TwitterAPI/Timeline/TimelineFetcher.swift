@@ -1,35 +1,3 @@
-/// Copyright (c) 2020 Razeware LLC
-/// 
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
-/// distribute, sublicense, create a derivative work, and/or sell copies of the
-/// Software in any work that is designed, intended, or marketed for pedagogical or
-/// instructional purposes related to programming, coding, application development,
-/// or information technology.  Permission for such use, copying, modification,
-/// merger, publication, distribution, sublicensing, creation of derivative works,
-/// or sale is expressly withheld.
-/// 
-/// This project and source code may use libraries or frameworks that are
-/// released under various Open-Source licenses. Use of those libraries and
-/// frameworks are governed by their own individual licenses.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-
 import Foundation
 
 import RxSwift
@@ -65,9 +33,8 @@ class TimelineFetcher {
   
   private init(account: Driver<TwitterAccount.AccountStatus>,
                jsonProvider: @escaping (AccessToken, TimelineCursor) -> Observable<[JSONObject]>) {
-    //
-    // subscribe for the current twitter account
-    //
+    
+    // 传入的是一个 Publihser, 根据 Publisher 构建出了符合自己的业务含义的新的 Publisher.
     let currentAccount: Observable<AccessToken> = account
       .filter { account in
         switch account {
@@ -85,6 +52,11 @@ class TimelineFetcher {
       .asObservable()
     
     // timer that emits a reachable logged account
+    // Combine 里面, 除了定时器, 其他的都是有着初始值的.
+    // 所以这种写法, 其实就是, 判断是否登录, 是否停止, 是否网络连接, 后, 进行网络请求.
+    // 如果登录改变, 网络改变, Pause 改变, 都会触发这个 Check 函数.
+    // 如果时间到了, 也会触发这个 Check 函数.
+    // 也就是说, 如果有着多场景触发同一个函数的情况, 那么使用 combineLates 其实是非常好的. 这可以当做是, combineLastst 的标志.
     let reachableTimerWithAccount = Observable.combineLatest(
       Observable<Int>.timer(.seconds(0), period: .seconds(timerDelay), scheduler: MainScheduler.instance),
       Reachability.rx.reachable,
@@ -100,11 +72,16 @@ class TimelineFetcher {
     
     // Re-fetch the timeline
     
+    // WithLatest 可以认为是 CombineLast 的简化版本,
+    // 被 With 的事件序列, 是没有办法触发事件的流转的, 它仅仅是触发记录当前自己值的操作 .
+    // 真正能够触发操作节点的, 还是 Source0 的作用.
     timeline = reachableTimerWithAccount
       .withLatestFrom(feedCursor.asObservable()) { account, cursor in
         return (account: account, cursor: cursor)
       }
+    // Token + Cursor, 触发一个新的网络请求. 返回一个 JSON 数组.
       .flatMapLatest(jsonProvider)
+    // 然后使用 Tweet.unboxMany 进行变化成为 Model 数组.
       .map(Tweet.unboxMany)
       .share(replay: 1)
     
@@ -113,9 +90,12 @@ class TimelineFetcher {
       .scan(.none, accumulator: TimelineFetcher.currentCursor)
       .bind(to: feedCursor)
       .disposed(by: bag)
+    
+    // feedCursor 的生命周期, 其实是在这里被引用住了. 它虽然不是一个成员变量, 但一直会随着响应链条的生命周期存在. 
   }
   
-  static func currentCursor(lastCursor: TimelineCursor, tweets: [Tweet]) -> TimelineCursor {
+  static func currentCursor(lastCursor: TimelineCursor,
+                            tweets: [Tweet]) -> TimelineCursor {
     return tweets.reduce(lastCursor) { status, tweet in
       let max: Int64 = tweet.id < status.maxId ? tweet.id-1 : status.maxId
       let since: Int64 = tweet.id > status.sinceId ? tweet.id : status.sinceId
