@@ -38,6 +38,7 @@ import RxCocoa
 import Alamofire
 
 typealias JSONObject = [String: Any]
+
 typealias ListIdentifier = (username: String, slug: String)
 
 protocol TwitterAPIProtocol {

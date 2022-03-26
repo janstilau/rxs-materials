@@ -36,7 +36,7 @@ import Unbox
 
 class TestData {
   static let listId: ListIdentifier = (username:"user" , slug: "slug")
-
+  
   static let personJSON: [String: Any] = [
     "id": 1,
     "name": "Name",
@@ -44,12 +44,12 @@ class TestData {
     "description": "Description",
     "url": "url",
     "profile_image_url_https": "profile_image_url_https",
-    ]
-
+  ]
+  
   static var personUserObject: User {
     return (try! unbox(dictionary: personJSON))
   }
-
+  
   static let tweetJSON: [String: Any] = [
     "id": 1,
     "text": "Text",
@@ -59,7 +59,7 @@ class TestData {
     ],
     "created_at": "Mon Oct 22 11:54:26 +0000 2007"
   ]
-
+  
   static var tweetsJSON: [[String: Any]] {
     return (1...3).map {
       var dict = tweetJSON
@@ -67,7 +67,7 @@ class TestData {
       return dict
     }
   }
-
+  
   static var tweets: [Tweet] {
     return try! unbox(dictionaries: tweetsJSON, allowInvalidElements: true) as [Tweet]
   }
