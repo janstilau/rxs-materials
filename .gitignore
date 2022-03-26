@@ -288,4 +288,5 @@ DerivedData/
 ## Gcc Patch
 /*.gcno
 
-Pods/*
+Pods/
+
