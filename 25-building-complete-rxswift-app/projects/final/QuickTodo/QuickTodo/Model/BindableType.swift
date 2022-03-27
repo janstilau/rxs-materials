@@ -10,6 +10,7 @@ protocol BindableType: AnyObject {
 }
 
 extension BindableType where Self: UIViewController {
+  
   func bindViewModel(to model: Self.ViewModelType) {
     viewModel = model
     loadViewIfNeeded()

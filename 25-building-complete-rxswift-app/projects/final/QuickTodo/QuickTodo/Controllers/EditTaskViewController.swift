@@ -4,6 +4,7 @@ import RxCocoa
 import Action
 import NSObject_Rx
 
+// 这里的代码, 着实是有些复杂了. 
 class EditTaskViewController: UIViewController, BindableType {
   
   @IBOutlet var titleView: UITextView!

@@ -6,11 +6,16 @@ class TaskItemTableViewCell: UITableViewCell {
   
   @IBOutlet var title: UILabel!
   @IBOutlet var button: UIButton!
+  
   private var disposeBag = DisposeBag()
   
   func configure(with item: TaskItem, action: CocoaAction) {
+    
     button.rx.action = action
     
+    // 监听了 Item 的 title 的这个属性.
+    // 里面使用了 KVO 的机制.
+    // 在现实的环境里面, 很少使用 KVO 这种机制在 Swfit 里面. 
     item.rx.observe(String.self, "title")
       .subscribe(onNext: { [weak self] title in
         self?.title.text = title

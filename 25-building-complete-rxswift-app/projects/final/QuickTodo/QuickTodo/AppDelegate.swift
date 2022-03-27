@@ -8,7 +8,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let service = TaskService()
     let sceneCoordinator = SceneCoordinator(window: window!)
     
-    let tasksViewModel = TasksViewModel(taskService: service, coordinator: sceneCoordinator)
+    let tasksViewModel = TasksViewModel(taskService: service,
+                                        coordinator: sceneCoordinator)
     let firstScene = Scene.tasks(tasksViewModel)
     sceneCoordinator.transition(to: firstScene, type: .root)
     return true
