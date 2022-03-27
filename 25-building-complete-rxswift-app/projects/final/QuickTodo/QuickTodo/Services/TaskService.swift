@@ -1,42 +1,10 @@
-/// Copyright (c) 2020 Razeware LLC
-/// 
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
-/// distribute, sublicense, create a derivative work, and/or sell copies of the
-/// Software in any work that is designed, intended, or marketed for pedagogical or
-/// instructional purposes related to programming, coding, application development,
-/// or information technology.  Permission for such use, copying, modification,
-/// merger, publication, distribution, sublicensing, creation of derivative works,
-/// or sale is expressly withheld.
-/// 
-/// This project and source code may use libraries or frameworks that are
-/// released under various Open-Source licenses. Use of those libraries and
-/// frameworks are governed by their own individual licenses.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-
 import Foundation
 import RealmSwift
 import RxSwift
 import RxRealm
 
 struct TaskService: TaskServiceType {
-
+  
   init() {
     // create a few default tasks
     do {
@@ -53,7 +21,7 @@ struct TaskService: TaskServiceType {
     } catch _ {
     }
   }
-
+  
   private func withRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
     do {
       let realm = try Realm()
@@ -63,7 +31,7 @@ struct TaskService: TaskServiceType {
       return nil
     }
   }
-
+  
   @discardableResult
   func createTask(title: String) -> Observable<TaskItem> {
     let result = withRealm("creating") { realm -> Observable<TaskItem> in
@@ -77,7 +45,7 @@ struct TaskService: TaskServiceType {
     }
     return result ?? .error(TaskServiceError.creationFailed)
   }
-
+  
   @discardableResult
   func delete(task: TaskItem) -> Observable<Void> {
     let result = withRealm("deleting") { realm-> Observable<Void> in
@@ -88,7 +56,7 @@ struct TaskService: TaskServiceType {
     }
     return result ?? .error(TaskServiceError.deletionFailed(task))
   }
-
+  
   @discardableResult
   func update(task: TaskItem, title: String) -> Observable<TaskItem> {
     let result = withRealm("updating title") { realm -> Observable<TaskItem> in
@@ -99,7 +67,7 @@ struct TaskService: TaskServiceType {
     }
     return result ?? .error(TaskServiceError.updateFailed(task))
   }
-
+  
   @discardableResult
   func toggle(task: TaskItem) -> Observable<TaskItem> {
     let result = withRealm("toggling") { realm -> Observable<TaskItem> in
@@ -114,7 +82,7 @@ struct TaskService: TaskServiceType {
     }
     return result ?? .error(TaskServiceError.toggleFailed(task))
   }
-
+  
   func tasks() -> Observable<Results<TaskItem>> {
     let result = withRealm("getting tasks") { realm -> Observable<Results<TaskItem>> in
       let realm = try Realm()
