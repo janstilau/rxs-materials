@@ -17,12 +17,14 @@ class TimelineFetcher {
   // MARK: input
   let paused = BehaviorRelay<Bool>(value: false)
   
-  // MARK: output
+  // 外界真正使用的信号. 它的发射, 代表着就是数据发生了改变.
   let timeline: Observable<[Tweet]>
   // MARK: Init with list or user
   
   //provide list id to fetch list's tweets
-  convenience init(account: Driver<TwitterAccount.AccountStatus>, list: ListIdentifier, apiType: TwitterAPIProtocol.Type) {
+  convenience init(account: Driver<TwitterAccount.AccountStatus>, // Token 数据
+                   list: ListIdentifier, // 用户信息
+                   apiType: TwitterAPIProtocol.Type) { // API 接口对象.
     self.init(account: account, jsonProvider: apiType.timeline(of: list))
   }
   
@@ -34,7 +36,9 @@ class TimelineFetcher {
   private init(account: Driver<TwitterAccount.AccountStatus>,
                jsonProvider: @escaping (AccessToken, TimelineCursor) -> Observable<[JSONObject]>) {
     
-    // 传入的是一个 Publihser, 根据 Publisher 构建出了符合自己的业务含义的新的 Publisher.
+    // ViewModel 里面, 有重的一部分工作, 就是将外界传入的 Observable, 按照自己的逻辑, 转变成为 View 层需要的 Observable.
+    
+    // 账号改变的 Publisher
     let currentAccount: Observable<AccessToken> = account
       .filter { account in
         switch account {
@@ -58,7 +62,11 @@ class TimelineFetcher {
     // 如果时间到了, 也会触发这个 Check 函数.
     // 也就是说, 如果有着多场景触发同一个函数的情况, 那么使用 combineLates 其实是非常好的. 这可以当做是, combineLastst 的标志.
     let reachableTimerWithAccount = Observable.combineLatest(
+      // Observable<Int>.timer 主要是为了, 每个多少秒, 就触发一下 reachableTimerWithAccount 的信号的发送 .
+      // 是否应该发送, 还有后面的 resultSelector 进行过滤
       Observable<Int>.timer(.seconds(0), period: .seconds(timerDelay), scheduler: MainScheduler.instance),
+      // Reachability.rx.reachable 会在网络变化的时候, 发射新的信号.
+      // 每次调用 Reachability.rx.reachable, 都会产生一个新的, 监听网络状态的事件序列.
       Reachability.rx.reachable,
       currentAccount,
       paused.asObservable(),
@@ -67,6 +75,12 @@ class TimelineFetcher {
       })
       .filter { $0 != nil }
       .map { $0! }
+    
+    // reachableTimerWithAccount 最后代表着, 应该进行网络请求了. ele 是 AccessToken
+    
+    // 从这里可以看到, 多个场景统一触发一个逻辑的时候, 用 Combine 这个 Operator 可以大大的简化逻辑.
+    // 这里能够看出, 这种 connect 多监听者机制的好处. 上面的各种事件, 到底在哪里进行了状态的修改其实是不一定的. 为了将所有的状态改变, 都集中到一个 Check 函数, 需要精心的设计.
+    // 而现在, 使用信号发送这个统一的抽象, 数据发生改变的地方, 和后续的触发逻辑是分离的. 在 Controller 层, 将这两个进行挂钩就可以了.
     
     let feedCursor = BehaviorRelay<TimelineCursor>(value: .none)
     
@@ -91,7 +105,7 @@ class TimelineFetcher {
       .bind(to: feedCursor)
       .disposed(by: bag)
     
-    // feedCursor 的生命周期, 其实是在这里被引用住了. 它虽然不是一个成员变量, 但一直会随着响应链条的生命周期存在. 
+    // feedCursor 的生命周期, 其实是在这里被引用住了. 它虽然不是一个成员变量, 但一直会随着响应链条的生命周期存在.
   }
   
   static func currentCursor(lastCursor: TimelineCursor,

@@ -1,11 +1,3 @@
-//
-//  ImageView+setURL.swift
-//  Tweetie
-//
-//  Created by Marin Todorov on 12/9/18.
-//  Copyright © 2018 Underplot ltd. All rights reserved.
-//
-
 #if os(iOS)
 import UIKit
 typealias ImageView = UIImageView

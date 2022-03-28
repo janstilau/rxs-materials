@@ -97,11 +97,11 @@ struct TwitterAPI: TwitterAPIProtocol {
        */
       guard !TwitterAccount.isLocal else {
         if let cachedFileURL = Bundle.main.url(forResource: url.safeLocalRepresentation.lastPathComponent, withExtension: nil),
-/*
- https://api.twitter.com/1.1/lists/statuses.json?owner_screen_name=icanzilb&slug=RxSwift
- 
- file:///private/var/containers/Bundle/Application/3D8F267C-A1A4-4653-8B58-196AA7B40A4C/Tweetie.app/statuses.json-owner_screen_name-icanzilb-slug-RxSwift
- */
+           /*
+            https://api.twitter.com/1.1/lists/statuses.json?owner_screen_name=icanzilb&slug=RxSwift
+            
+            file:///private/var/containers/Bundle/Application/3D8F267C-A1A4-4653-8B58-196AA7B40A4C/Tweetie.app/statuses.json-owner_screen_name-icanzilb-slug-RxSwift
+            */
            let data = try? Data(contentsOf: cachedFileURL),
            // 这里的 as? 可以进行 T 的确认. 其实 JSONObject 就是 [String: Any]
            let json = ((try? JSONSerialization.jsonObject(with: data, options: []) as? T) as T??),
