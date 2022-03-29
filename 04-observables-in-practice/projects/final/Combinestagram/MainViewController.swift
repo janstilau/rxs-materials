@@ -74,9 +74,17 @@ class MainViewController: UIViewController {
         /*
          整个处理逻辑, 变为了 信号触发, 信号的回调触发, 在信号的回调里面, 引起新的信号的触发,
          整个逻辑处理, 增加了信号这个抽象层, 好处是解耦, 但是增加了理解的难度.
+         
+         整个逻辑, 是存储在了 selectedPhotos 的内部. 如果 selectedPhotos 消亡了, 引用关系也就消亡了.
          */
+        
+        // 如果, selectedPhotos 后面直接 subscribe, 那么 AnonymousObserver 可以消亡. 因为 AnonymousObserver 没有生成 Sink 这种自引用对象存在.
+        // 但是一旦中间有一个 Sink, 那么后面的 AnonymousObserver 其实是存在 Sink 的 Observer 里面. 这个时候, Sink 是自引用的, 就会导致如果没有 StopEvent, 这个 subscription 就不会被 dispose 了.
+        // 那这样就会有循环引用的了.
         photosViewController.selectedPhotos
-            .subscribe(
+            .do(onNext: { _ in
+            print("Do On Next")
+        }).subscribe(
                 onNext: { [weak self] newImage in
                     guard let images = self?.images else { return }
                     images.accept(images.value + [newImage])

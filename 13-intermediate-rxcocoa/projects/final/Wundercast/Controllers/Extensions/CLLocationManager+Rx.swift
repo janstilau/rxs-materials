@@ -47,9 +47,9 @@ public extension Reactive where Base: CLLocationManager {
             .filter { $0 == .authorizedWhenInUse || $0 == .authorizedAlways }
             .flatMap { _ in self.didUpdateLocations.compactMap(\.first) }
             .take(1)
-        // 拿到数据之后, 关闭定位. 
+        // 拿到数据之后, 关闭定位.
             .do(onDispose: { [weak base] in base?.stopUpdatingLocation() })
-             
+                
                 // 在这里, 才会开始定位.
                 base.requestWhenInUseAuthorization()
                 base.startUpdatingLocation()

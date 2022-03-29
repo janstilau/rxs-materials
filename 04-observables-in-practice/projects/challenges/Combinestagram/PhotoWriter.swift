@@ -40,10 +40,13 @@ class PhotoWriter {
   enum Errors: Error {
     case couldNotSavePhoto
   }
-
+  
+  // 返回一个 Single, 需要使用 Single.create
+  // 然后里面的 Observer, 是接受 success, fail 事件的闭包 
   static func save(_ image: UIImage) -> Single<String> {
+    
     return Single.create(subscribe: { observer in
-
+      
       var savedAssetId: String?
       PHPhotoLibrary.shared().performChanges({
         let request = PHAssetChangeRequest.creationRequestForAsset(from: image)

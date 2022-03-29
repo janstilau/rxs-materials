@@ -60,13 +60,14 @@ extension ViewController {
                            longitude: self.mapView.centerCoordinate.longitude)
             }
         
-        // 定位了之后, 没有关闭定位.
         let locationInputChange = locationBtn.rx.tap
             .flatMapLatest { _ in self.locationManager.rx.getCurrentLocation() }
         
         // 不管是, 定位, 还是 MapView 的移动, 最终拿到的都是一个经纬度的值.
         // Merge 在这里进行了使用, 当两个 Publisher 使用的是同一种类型的 NextEle 的时候, 就可以 Merge, 使用统一的处理方法触发后面的逻辑.
-        let geoSearch = Observable.merge(locationInputChange, mapInputChange)
+        
+        // locationInputChange 在这里被使用, 会导致 locationBtn 注册一个 rxTarget.
+        let locationSearch = Observable.merge(locationInputChange, mapInputChange)
         // 这里使用的是 FlatMapLatest, 所以, 会一直使用最新的信号进行后续的操作.
             .flatMapLatest { location in
                 ApiController.shared
@@ -83,20 +84,24 @@ extension ViewController {
                 .catchErrorJustReturn(.empty)
         }
         
-        let search = Observable
-            .merge(geoSearch, textSearch)
+        let searchPublisher = Observable
+            .merge(locationSearch, textSearch)
+        // 在这里, 进行了 asDriver, 进行了 share 操作.
             .asDriver(onErrorJustReturn: .empty)
         
         // 前面三个, 都是用户的行为, 触发了之后, 代表着正在获取 weather 的数据.
         // 后面一个, 则是得到了 Weather 的结果.
         // 所以, 这里 map 都是写死的值.
+        
+        // locationInputChange 在这里使用, 会导致 locationBtn 注册一个 rxTarget.
         let running = Observable.merge(
             searchInputChange.map { _ in true },
             locationInputChange.map { _ in true },
             mapInputChange.map { _ in true },
-            search.map { _ in false }.asObservable()
+            searchPublisher.map { _ in false }.asObservable()
         )
             .startWith(true)
+        // asDriver 会进行 share 操作, 不然, runing 后面的操作,
             .asDriver(onErrorJustReturn: false)
         
         // Runing 代表的含义是, 当前是否有用户操作导致的请求.
@@ -124,20 +129,20 @@ extension ViewController {
             .disposed(by: bag)
         
         
-        search.map { "\($0.temperature)° C" }
+        searchPublisher.map { "\($0.temperature)° C" }
         .drive(temperatureLabel.rx.text)
         .disposed(by: bag)
         
         // 使用 KeyPath 的方式, 进行了取值. 然后设置到 Text 的属性上了.
-        search.map(\.icon)
+        searchPublisher.map(\.icon)
             .drive(iconLabel.rx.text)
             .disposed(by: bag)
         
-        search.map { "\($0.humidity)%" }
+        searchPublisher.map { "\($0.humidity)%" }
         .drive(humidityLabel.rx.text)
         .disposed(by: bag)
         
-        search.map(\.cityName)
+        searchPublisher.map(\.cityName)
             .drive(cityNameLabel.rx.text)
             .disposed(by: bag)
         
@@ -154,7 +159,7 @@ extension ViewController {
             .disposed(by: bag)
         
         // 当, 有了新的数据了之后, 会直接给到 MapView, MapView 怎么设置, 不用管.
-        search
+        searchPublisher
             .map { $0.overlay() }
             .drive(mapView.rx.overlay)
             .disposed(by: bag)

@@ -42,7 +42,11 @@ class PhotosViewController: UICollectionViewController {
     // 感觉没有太大必要.
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        selectedPhotosSubject.onCompleted()
+//        selectedPhotosSubject.onCompleted()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
     }
     
     // MARK: UICollectionView
