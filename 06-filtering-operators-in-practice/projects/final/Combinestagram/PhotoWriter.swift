@@ -9,6 +9,7 @@ class PhotoWriter {
     case couldNotSavePhoto
   }
   
+  // 从, 原有的 Observable, 变为了 Single 类了.
   static func save(_ image: UIImage) -> Single<String> {
     return Single.create(subscribe: { observer in
       
@@ -28,5 +29,4 @@ class PhotoWriter {
       return Disposables.create()
     })
   }
-  
 }
