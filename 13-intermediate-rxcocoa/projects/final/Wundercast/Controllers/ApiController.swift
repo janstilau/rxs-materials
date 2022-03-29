@@ -7,6 +7,8 @@ import MapKit
 class ApiController {
     
     struct Weather: Decodable {
+        
+        // 经常会有这种静态对象, 作为 Error 的处理.
         static let empty = Weather(
             cityName: "Unknown",
             temperature: -1000,
@@ -88,11 +90,15 @@ class ApiController {
     }
     
     // MARK: - Api Calls
+    
     // 通过城市名, 来访问接口, 获取到最新的 Weather 数据
+    // buildRequest 建立 Observable<Data> 的序列, 然后在这个方法里面, 包装成为了 Weather
     func currentWeather(for city: String) -> Observable<Weather> {
         buildRequest(pathComponent: "weather",
                      params: [("q", city)])
-            .map { data in
+            .map {
+                // map 里面有 try catch 的处理.
+                data in
                 try JSONDecoder().decode(Weather.self, from: data)
             }
     }
@@ -109,6 +115,8 @@ class ApiController {
     // MARK: - Private Methods
     
     private func buildRequest(method: String = "GET", pathComponent: String, params: [(String, String)]) -> Observable<Data> {
+        
+        //
         let url = baseURL.appendingPathComponent(pathComponent)
         var request = URLRequest(url: url)
         let keyQueryItem = URLQueryItem(name: "appid", value: apiKey)
@@ -175,6 +183,7 @@ public func iconNameToChar(icon: String) -> String {
     }
 }
 
+// 一个工具方法, 从 Text 变化都 Image. 这就是一个工具方法.
 private func imageFromText(text: String, font: UIFont) -> UIImage {
     let size = text.size(withAttributes: [NSAttributedString.Key.font: font])
     

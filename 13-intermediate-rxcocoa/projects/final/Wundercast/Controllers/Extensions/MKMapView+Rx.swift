@@ -6,6 +6,7 @@ import RxCocoa
 extension MKMapView: HasDelegate {}
 
 class RxMKMapViewDelegateProxy: DelegateProxy<MKMapView, MKMapViewDelegate>, DelegateProxyType, MKMapViewDelegate {
+    
     weak public private(set) var mapView: MKMapView?
     
     public init(mapView: ParentObject) {
@@ -20,6 +21,7 @@ class RxMKMapViewDelegateProxy: DelegateProxy<MKMapView, MKMapViewDelegate>, Del
 }
 
 public extension Reactive where Base: MKMapView {
+    
     var delegate: DelegateProxy<MKMapView, MKMapViewDelegate> {
         RxMKMapViewDelegateProxy.proxy(for: base)
     }
@@ -42,6 +44,7 @@ public extension Reactive where Base: MKMapView {
     var regionDidChangeAnimated: ControlEvent<Bool> {
         let source = delegate
             .methodInvoked(#selector(MKMapViewDelegate.mapView(_:regionDidChangeAnimated:)))
+        
             .map { parameters in
                 return (parameters[1] as? Bool) ?? false
             }

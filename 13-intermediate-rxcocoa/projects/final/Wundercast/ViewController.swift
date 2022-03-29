@@ -6,6 +6,7 @@ import CoreLocation
 
 class ViewController: UIViewController {
     
+    // 所有的, 都集中到了一个 VC 里面.
     @IBOutlet private var mapView: MKMapView!
     @IBOutlet private var mapBtn: UIButton!
     @IBOutlet private var locationBtn: UIButton!
@@ -21,23 +22,19 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         configureViews()
         bindSignals()
         Appearance.applyBottomLine(to: cityNameTextField)
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
     }
 }
 
 extension ViewController {
     
+    // 做最初的 View 的配置工作.
     private func configureViews() {
         view.backgroundColor = UIColor.aztec
         cityNameTextField.attributedPlaceholder = NSAttributedString(string: "City's Name",
-                                                                  attributes: [.foregroundColor: UIColor.textGrey])
+                                                                     attributes: [.foregroundColor: UIColor.textGrey])
         cityNameTextField.textColor = UIColor.ufoGreen
         temperatureLabel.textColor = UIColor.cream
         humidityLabel.textColor = UIColor.cream
@@ -45,17 +42,18 @@ extension ViewController {
         cityNameLabel.textColor = UIColor.cream
     }
     
+    // 真正的绑定部分.
     private func bindSignals() {
         
         // 当, 用户输入完 TextField 的内容之后, 会发射一个信号, 将最新的输入城市当做数据.
-        let searchInput = cityNameTextField.rx
+        let searchInputChange = cityNameTextField.rx
         // ControlEvent 用来触发信号.
             .controlEvent(.editingDidEndOnExit)
         // map 用来获取当前 TextFiled 的值. Map 也可以这样用, 上级节点的数据无关重要.
             .map { self.cityNameTextField.text ?? "" }
             .filter { !$0.isEmpty }
         
-        let mapInput = mapView.rx.regionDidChangeAnimated
+        let mapInputChange = mapView.rx.regionDidChangeAnimated
             .skip(1)
             .map { _ in
                 CLLocation(latitude: self.mapView.centerCoordinate.latitude,
@@ -63,12 +61,12 @@ extension ViewController {
             }
         
         // 定位了之后, 没有关闭定位.
-        let locationInput = locationBtn.rx.tap
+        let locationInputChange = locationBtn.rx.tap
             .flatMapLatest { _ in self.locationManager.rx.getCurrentLocation() }
         
         // 不管是, 定位, 还是 MapView 的移动, 最终拿到的都是一个经纬度的值.
-        // Merge 在这里进行了使用, 当两个 Publisher 使用的是同一种类型的 NextEle 的时候, 就可以 Merge, 使用统一的处理方法触发后面的逻辑. 
-        let geoSearch = Observable.merge(locationInput, mapInput)
+        // Merge 在这里进行了使用, 当两个 Publisher 使用的是同一种类型的 NextEle 的时候, 就可以 Merge, 使用统一的处理方法触发后面的逻辑.
+        let geoSearch = Observable.merge(locationInputChange, mapInputChange)
         // 这里使用的是 FlatMapLatest, 所以, 会一直使用最新的信号进行后续的操作.
             .flatMapLatest { location in
                 ApiController.shared
@@ -77,7 +75,7 @@ extension ViewController {
             }
         
         // 用户输入行为, 会触发一个网络请求 API,
-        let textSearch = searchInput.flatMap { city in
+        let textSearch = searchInputChange.flatMap { city in
             ApiController.shared
                 .currentWeather(for: city)
             // 如果网络出错了, 返回一个默认数据.
@@ -93,9 +91,9 @@ extension ViewController {
         // 后面一个, 则是得到了 Weather 的结果.
         // 所以, 这里 map 都是写死的值.
         let running = Observable.merge(
-            searchInput.map { _ in true },
-            locationInput.map { _ in true },
-            mapInput.map { _ in true },
+            searchInputChange.map { _ in true },
+            locationInputChange.map { _ in true },
+            mapInputChange.map { _ in true },
             search.map { _ in false }.asObservable()
         )
             .startWith(true)
@@ -127,8 +125,8 @@ extension ViewController {
         
         
         search.map { "\($0.temperature)° C" }
-            .drive(temperatureLabel.rx.text)
-            .disposed(by: bag)
+        .drive(temperatureLabel.rx.text)
+        .disposed(by: bag)
         
         // 使用 KeyPath 的方式, 进行了取值. 然后设置到 Text 的属性上了.
         search.map(\.icon)
@@ -136,8 +134,8 @@ extension ViewController {
             .disposed(by: bag)
         
         search.map { "\($0.humidity)%" }
-            .drive(humidityLabel.rx.text)
-            .disposed(by: bag)
+        .drive(humidityLabel.rx.text)
+        .disposed(by: bag)
         
         search.map(\.cityName)
             .drive(cityNameLabel.rx.text)

@@ -31,6 +31,7 @@ extension Reactive where Base: UIControl {
     ///
     /// - parameter controlEvents: Filter for observed event types.
     public func controlEvent(_ controlEvents: UIControl.Event) -> ControlEvent<()> {
+        //
         let source: Observable<Void> = Observable.create { [weak control = self.base] observer in
                 MainScheduler.ensureRunningOnMainThread()
 
@@ -39,12 +40,15 @@ extension Reactive where Base: UIControl {
                     return Disposables.create()
                 }
 
-                let controlTarget = ControlTarget(control: control, controlEvents: controlEvents) { _ in
+                let controlTarget = ControlTarget(control: control,
+                                                  controlEvents: controlEvents) { _ in
+                    // 每次 event 发生, 进行信号的发送. 
                     observer.on(.next(()))
                 }
 
                 return Disposables.create(with: controlTarget.dispose)
             }
+        // 只有 dispose 之后, ControlTarget 的生命周期才结束.
             .takeUntil(deallocated)
 
         return ControlEvent(events: source)
