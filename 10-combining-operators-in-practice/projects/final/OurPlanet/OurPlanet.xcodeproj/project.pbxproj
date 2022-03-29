@@ -62,7 +62,6 @@
 				C0FC7128A476706800631646 /* Pods-OurPlanet.debug.xcconfig */,
 				ADE35034C9057B8C4E938158 /* Pods-OurPlanet.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -157,6 +156,7 @@
 				TargetAttributes = {
 					3D46E6231E258DFC0090C97B = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = GAJJ4F72ZK;
 						LastSwiftMigration = 1150;
 						ProvisioningStyle = Automatic;
 					};
@@ -394,10 +394,10 @@
 			baseConfigurationReference = C0FC7128A476706800631646 /* Pods-OurPlanet.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GAJJ4F72ZK;
 				INFOPLIST_FILE = OurPlanet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.raywenderlich.OurPlanet;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.raywenderlich.OurPlanet-yami";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -408,10 +408,10 @@
 			baseConfigurationReference = ADE35034C9057B8C4E938158 /* Pods-OurPlanet.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GAJJ4F72ZK;
 				INFOPLIST_FILE = OurPlanet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.raywenderlich.OurPlanet;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.raywenderlich.OurPlanet-yami";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

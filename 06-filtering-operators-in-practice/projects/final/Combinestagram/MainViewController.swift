@@ -62,7 +62,7 @@ class MainViewController: UIViewController {
     navigationController!.pushViewController(photosViewController, animated: true)
     
     // 通过查看源码, 知道 selectedPhotos 其实是一个 SUBJECT, 而 Subject 是默认具有 share 属性的.
-    // 但是, 使用放并不知道, 所以, 在合适的时候, 应该明显的调用 share
+    // 但是, 使用者并不知道, 所以, 在合适的时候, 应该明显的调用 share
     let newPhotos = photosViewController.selectedPhotos
       .share()
     
@@ -104,6 +104,7 @@ class MainViewController: UIViewController {
     // 不关心 next 事件, 仅仅关心 complete 事件.
     // ignoreElements 后面的所有节点, 仅仅会在 complete 事件中触发操作.
       .ignoreElements()
+    // newPhoto VC 在消失的时候, 会发射出 Complete 出来. 所以是在界面回退到上一个页面的时候, 是进行 NavigationBar 的更新.
       .subscribe(onCompleted: { [weak self] in
         self?.updateNavigationIcon()
       })
