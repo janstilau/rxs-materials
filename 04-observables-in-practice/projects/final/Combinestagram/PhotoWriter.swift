@@ -1,63 +1,37 @@
-/// Copyright (c) 2020 Razeware LLC
-/// 
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
-/// distribute, sublicense, create a derivative work, and/or sell copies of the
-/// Software in any work that is designed, intended, or marketed for pedagogical or
-/// instructional purposes related to programming, coding, application development,
-/// or information technology.  Permission for such use, copying, modification,
-/// merger, publication, distribution, sublicensing, creation of derivative works,
-/// or sale is expressly withheld.
-/// 
-/// This project and source code may use libraries or frameworks that are
-/// released under various Open-Source licenses. Use of those libraries and
-/// frameworks are governed by their own individual licenses.
-///
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-
 import RxSwift
 import Foundation
 import UIKit
 import Photos
 
 class PhotoWriter {
-  enum Errors: Error {
-    case couldNotSavePhoto
-  }
-
-  static func save(_ image: UIImage) -> Observable<String> {
-    return Observable.create { observer in
-      var savedAssetId: String?
-      PHPhotoLibrary.shared().performChanges({
-        let request = PHAssetChangeRequest.creationRequestForAsset(from: image)
-        savedAssetId = request.placeholderForCreatedAsset?.localIdentifier
-      }, completionHandler: { success, error in
-        DispatchQueue.main.async {
-          if success, let id = savedAssetId {
-            observer.onNext(id)
-            observer.onCompleted()
-          } else {
-            observer.onError(error ?? Errors.couldNotSavePhoto)
-          }
-        }
-      })
-
-      return Disposables.create()
+    enum Errors: Error {
+        case couldNotSavePhoto
     }
-  }
+    
+    // Observable.create 提供了一种, 统一的方式, 将原本的命令式逻辑, 封装成为 Observable 的逻辑.
+    /*
+     它的实现是, 使用一个 Sink, 当做真正的状态更改的节点. 就是传入的 observer 对象.
+     create 传入的闭包内, 在合适的时机, 真正的触发状态改变的 on 方法.
+     */
+    static func save(_ image: UIImage) -> Observable<String> {
+        return Observable.create { observer in
+            // 异步操作真正的开启的地方.
+            var savedAssetId: String?
+            PHPhotoLibrary.shared().performChanges({
+                let request = PHAssetChangeRequest.creationRequestForAsset(from: image)
+                savedAssetId = request.placeholderForCreatedAsset?.localIdentifier
+            }, completionHandler: { success, error in
+                DispatchQueue.main.async {
+                    if success, let id = savedAssetId {
+                        // 在合适的地方, 触发状态的修改.
+                        observer.onNext(id)
+                        observer.onCompleted()
+                    } else {
+                        observer.onError(error ?? Errors.couldNotSavePhoto)
+                    }
+                }
+            })
+            return Disposables.create()
+        }
+    }
 }
