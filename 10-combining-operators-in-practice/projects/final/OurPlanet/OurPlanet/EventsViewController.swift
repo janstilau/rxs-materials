@@ -3,6 +3,7 @@ import RxSwift
 import RxCocoa
 
 class EventsViewController: UIViewController, UITableViewDataSource {
+  
   @IBOutlet var tableView: UITableView!
   @IBOutlet var slider: UISlider!
   @IBOutlet var daysLabel: UILabel!

@@ -3,6 +3,7 @@ import RxSwift
 import RxCocoa
 
 class CategoriesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+  
   @IBOutlet var tableView: UITableView!
   
   let categories = BehaviorRelay<[EOCategory]>(value: [])
@@ -10,7 +11,6 @@ class CategoriesViewController: UIViewController, UITableViewDataSource, UITable
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
     categories
       .asObservable()
       .subscribe(onNext: { [weak self] _ in
@@ -24,17 +24,19 @@ class CategoriesViewController: UIViewController, UITableViewDataSource, UITable
   }
   
   func startDownload() {
-    let eoCategories = EONET.categories
-    let downloadedEvents = eoCategories
+    let eoCategoryRequest = EONET.categories
+    let eventRequests = eoCategoryRequest
       .flatMap { categories in
+        // categories.map 这个函数, 一下子触发了很多的 EONET.events 网络请求.
         return Observable.from(categories.map { category in
           EONET.events(forLast: 360, category: category)
         })
       }
       .merge(maxConcurrent: 2)
     
-    let updatedCategories = eoCategories.flatMap { categories in
-      downloadedEvents.scan(categories) { updated, events in
+    let updatedCategories = eoCategoryRequest.flatMap { categories in
+      eventRequests.scan(categories) { updated, events in
+        // 每次 Events 发出信号之后, 可以更新 categories 里面的值.
         return updated.map { category in
           let eventsForCategory = EONET.filteredEvents(events: events, forCategory: category)
           if !eventsForCategory.isEmpty {
@@ -47,7 +49,7 @@ class CategoriesViewController: UIViewController, UITableViewDataSource, UITable
       }
     }
     
-    eoCategories
+    eoCategoryRequest
       .concat(updatedCategories)
       .bind(to: categories)
       .disposed(by: disposeBag)

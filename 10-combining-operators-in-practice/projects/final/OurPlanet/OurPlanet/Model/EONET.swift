@@ -8,7 +8,8 @@ class EONET {
   static let eventsEndpoint = "/events"
   
   static var categories: Observable<[EOCategory]> = {
-    let request: Observable<[EOCategory]> = EONET.request(endpoint: categoriesEndpoint, contentIdentifier: "categories")
+    let request: Observable<[EOCategory]> = EONET.request(endpoint: categoriesEndpoint,
+                                                          contentIdentifier: "categories")
     
     return request
       .map { categories in categories.sorted { $0.name < $1.name } }
@@ -23,10 +24,12 @@ class EONET {
     return decoder
   }
   
-  static func filteredEvents(events: [EOEvent], forCategory category: EOCategory) -> [EOEvent] {
+  static func filteredEvents(events: [EOEvent],
+                             forCategory category: EOCategory) -> [EOEvent] {
     return events
       .filter { event in
-        return event.categories.contains(where: { $0.id == category.id }) &&
+        return event.categories.contains(
+          where: { $0.id == category.id }) &&
         !category.events.contains { $0.id == event.id }
       }
       .sorted(by: EOEvent.compareDates)
@@ -65,7 +68,9 @@ class EONET {
     }
   }
   
-  private static func events(forLast days: Int, closed: Bool, endpoint: String) -> Observable<[EOEvent]> {
+  private static func events(forLast days: Int,
+                             closed: Bool,
+                             endpoint: String) -> Observable<[EOEvent]> {
     let query: [String: Any] = [
       "days": days,
       "status": (closed ? "closed" : "open")
@@ -79,6 +84,7 @@ class EONET {
     let closedEvents = events(forLast: days, closed: true, endpoint: category.endpoint)
     
     return Observable.of(openEvents, closedEvents)
+    // Merge 不关心顺序, 有可能 openEvents 先返回, 也有可能 closedEvents 先返回. 
       .merge()
       .reduce([]) { running, new in
         running + new

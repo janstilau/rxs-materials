@@ -31,6 +31,7 @@ struct EOEnvelope<Content: Decodable>: Decodable {
           let key = CodingKeys(stringValue: contentIdentifier) else {
             throw EOError.invalidDecoderConfiguration
           }
+    // 什么破玩意. 
     let container = try decoder.container(keyedBy: CodingKeys.self)
     content = try container.decode(Content.self, forKey: key)
   }
