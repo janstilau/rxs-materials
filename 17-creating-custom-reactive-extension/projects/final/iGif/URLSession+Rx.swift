@@ -11,6 +11,7 @@ public enum RxURLSessionError: Error {
 }
 
 extension Reactive where Base: URLSession {
+    
     func response(request: URLRequest) -> Observable<(HTTPURLResponse, Data)> {
         return Observable.create { observer in
             // content goes here
@@ -51,6 +52,7 @@ extension Reactive where Base: URLSession {
         }
     }
     
+    // 一层层的, 使用已经创建出来的 Observable, 进行加工 .
     func string(request: URLRequest) -> Observable<String> {
         return data(request: request).map { data in
             return String(data: data, encoding: .utf8) ?? ""

@@ -86,7 +86,6 @@
 				762D35A91514D6318256A6CF /* Pods-iGifTests.debug.xcconfig */,
 				834DCA1E5985AAF9D29BB224 /* Pods-iGifTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -233,6 +232,7 @@
 				TargetAttributes = {
 					CBB17E041E41227B0016EBA9 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = GAJJ4F72ZK;
 						ProvisioningStyle = Automatic;
 					};
 					CBB17E181E41227C0016EBA9 = {
@@ -550,10 +550,10 @@
 			baseConfigurationReference = 2677B4C4083F0039F7388E79 /* Pods-iGif.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GAJJ4F72ZK;
 				INFOPLIST_FILE = iGif/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.raywenderlich.iGif;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.raywenderlich.iGif-yami";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};
@@ -564,10 +564,10 @@
 			baseConfigurationReference = 5124239742A71B7B2FA77BF9 /* Pods-iGif.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GAJJ4F72ZK;
 				INFOPLIST_FILE = iGif/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.raywenderlich.iGif;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.raywenderlich.iGif-yami";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};

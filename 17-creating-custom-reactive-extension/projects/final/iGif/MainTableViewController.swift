@@ -2,6 +2,7 @@ import UIKit
 import RxSwift
 
 class MainTableViewController: UITableViewController {
+    
     private let searchController = UISearchController(searchResultsController: nil)
     private let bag = DisposeBag()
     private var gifs = [GiphyGif]()
@@ -21,6 +22,7 @@ class MainTableViewController: UITableViewController {
         .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
         .distinctUntilChanged()
         .flatMapLatest { query -> Observable<[GiphyGif]> in
+            // 触发网络请求.
             return ApiController.shared.search(text: query)
                 .catchErrorJustReturn([])
         }

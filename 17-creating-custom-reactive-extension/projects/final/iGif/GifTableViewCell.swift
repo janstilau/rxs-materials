@@ -18,6 +18,7 @@ class GifTableViewCell: UITableViewCell {
     
     func downloadAndDisplay(gif url: URL) {
         let request = URLRequest(url: url)
+        
         activityIndicator.startAnimating()
         
         let s = URLSession.shared.rx.data(request: request)
@@ -25,15 +26,22 @@ class GifTableViewCell: UITableViewCell {
             .subscribe(onNext: { [weak self] imageData in
                 guard let self = self else { return }
                 
-                self.gifImageView.animate(withGIFData: imageData)
+                self.gifImageView.image = UIImage.init(data: imageData)!
+//                self.gifImageView.animate(withGIFData: imageData)
                 self.activityIndicator.stopAnimating()
-            })
-        
+            }) { error in
+                print(error)
+            } onCompleted: {
+                
+            } onDisposed: {
+                
+            }
         disposable.setDisposable(s)
     }
 }
 
 extension UIImageView: GIFAnimatable {
+    
     private struct AssociatedKeys {
         static var AnimatorKey = "gifu.animator.key"
     }
@@ -49,7 +57,6 @@ extension UIImageView: GIFAnimatable {
                 self.animator = animator
                 return animator
             }
-            
             return animator
         }
         
