@@ -49,7 +49,8 @@ public class KooberSignedInDependencyContainer {
 
 
   // MARK: - Methods
-  public init(userSession: UserSession, appDependencyContainer: KooberAppDependencyContainer) {
+  public init(userSession: UserSession,
+              appDependencyContainer: KooberAppDependencyContainer) {
     func makeSignedInViewModel() -> SignedInViewModel {
       return SignedInViewModel()
     }
