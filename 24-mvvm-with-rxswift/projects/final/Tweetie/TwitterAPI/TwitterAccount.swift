@@ -9,6 +9,7 @@ import Unbox
 typealias AccessToken = String
 
 struct TwitterAccount {
+  
   static private var key: String = "placeholder"
   static private var secret: String = "placeholder"
   
@@ -27,6 +28,7 @@ struct TwitterAccount {
   }
   
   // logged or not
+  //
   enum AccountStatus {
     case unavailable
     case authorized(AccessToken)
@@ -65,7 +67,7 @@ struct TwitterAccount {
             observer.onNext(.unavailable)
             return
           }
-          // 不然, 发送网络请求, 在回调里面, 存储并返回.
+          // 正常拿到了 Toekn, 缓存并且触发信号.
           UserDefaults.standard.set(token, forKey: "token")
           observer.onNext(.authorized(token))
         }
@@ -79,11 +81,10 @@ struct TwitterAccount {
   }
   
   // MARK: - Getting the current twitter account
-  // 用命令式的方式, 进行 Token 的获取. 
+  // 用命令式的方式, 进行 Token 的获取.
   private func oAuth2Token(completion: @escaping (String?)->Void) -> DataRequest {
     let parameters: Parameters = ["grant_type": "client_credentials"]
     var headers: HTTPHeaders = ["Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"]
-    
     if let authorizationHeader = Request.authorizationHeader(user: TwitterAccount.key,
                                                              password: TwitterAccount.secret) {
       headers[authorizationHeader.key] = authorizationHeader.value

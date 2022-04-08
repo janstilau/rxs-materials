@@ -12,13 +12,14 @@ import RxCocoa
  Navigator 需要知道, 所有的 VC 的接口, 创建方式, 这样才可以让各个 VC 之间没有直接的连接.
  
  如果直接使用 Url 的方式, 则是传递 path 和 param, 使用字符串进行传递, 在 Router 的内部, 需要注册某个 Path 应该如何生成 VC, 生成这个 VC 然后返回.
- 现在的 YDRouter 的方式, 则是使用 Protocol 的方式, 使用 resolver 通过 Path 找到对应的 Protocol, 然后获取 Protocol 的实现类, 然后使用对应的 Params 使用 Creater 生成对应的 VC, 然后返回. 
+ 现在的 YDRouter 的方式, 则是使用 Protocol 的方式, 使用 resolver 通过 Path 找到对应的 Protocol, 然后获取 Protocol 的实现类, 然后使用对应的 Params 使用 Creater 生成对应的 VC, 然后返回.
  */
 class Navigator {
   
   lazy private var defaultStoryboard = UIStoryboard(name: "Main", bundle: nil)
   
   // MARK: - segues list
+  // VC 内部, 直接使用 Segue 进行编程, 避免了 VC 之间的互相依赖.
   enum Segue {
     case listTimeline(Driver<TwitterAccount.AccountStatus>, ListIdentifier)
     case listPeople(Driver<TwitterAccount.AccountStatus>, ListIdentifier)
@@ -26,6 +27,8 @@ class Navigator {
   }
   
   // MARK: - invoke a single segue
+  // 将, 所有的跳转逻辑, 归并到了 Navigator 类里面, 这样, 所有的 VC, 其实不用知道其他类型了.
+  // 但是, 需要 Navigator, 知道所有的 VC.
   func show(segue: Segue, sender: UIViewController) {
     switch segue {
     case .listTimeline(let account, let list):
@@ -46,9 +49,9 @@ class Navigator {
   }
   
   // 使用 Push 的方式, 将新生成的 VC 进行展示.
+  // 写的这么复杂. 鸟用没有.
   private func show(target: UIViewController, sender: UIViewController) {
     if let nav = sender as? UINavigationController {
-      //push root controller on navigation stack
       nav.pushViewController(target, animated: false)
       return
     }

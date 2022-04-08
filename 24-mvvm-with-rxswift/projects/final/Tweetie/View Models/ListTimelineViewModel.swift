@@ -11,7 +11,7 @@ class ListTimelineViewModel {
   
   private let fetcher: TimelineFetcher
   
-  let list: ListIdentifier // 用户名和密码
+  let list: ListIdentifier // 用户名和密码, ViewModel 里面, 存储的 Model 数据. 
   let account: Driver<TwitterAccount.AccountStatus>
   
   // MARK: - Input
@@ -47,6 +47,7 @@ class ListTimelineViewModel {
   }
   
   // MARK: - Methods
+  // 在 ViewModel 内, 做 Observable 的再加工处理.
   private func bindOutput() {
     // Bind tweets
     guard let realm = try? Realm() else {

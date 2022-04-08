@@ -9,6 +9,7 @@ typealias JSONObject = [String: Any]
 
 typealias ListIdentifier = (username: String, slug: String)
 
+// 这里返回的是一个闭包. 所以这里是一个工厂.
 protocol TwitterAPIProtocol {
   static func timeline(of username: String) -> (AccessToken, TimelineCursor) -> Observable<[JSONObject]>
   static func timeline(of list: ListIdentifier) -> (AccessToken, TimelineCursor) -> Observable<[JSONObject]>
@@ -112,6 +113,7 @@ struct TwitterAPI: TwitterAPIProtocol {
         return Disposables.create()
       }
       
+      // 所有的数据, 都编码到了 URL 里面.
       let request = Alamofire.request(url.absoluteString,
                                       method: .get,
                                       parameters: Parameters(),
