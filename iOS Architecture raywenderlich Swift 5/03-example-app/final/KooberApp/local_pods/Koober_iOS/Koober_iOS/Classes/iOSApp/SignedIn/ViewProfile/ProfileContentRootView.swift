@@ -72,7 +72,7 @@ extension ProfileContentRootView: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
-    // ViewModel 暴露, View 相关的显示逻辑. 
+    // ViewModel 暴露, View 相关的显示逻辑.
     func content(forIndexPath indexPath: IndexPath) -> String {
         switch indexPath.section {
         case 0:

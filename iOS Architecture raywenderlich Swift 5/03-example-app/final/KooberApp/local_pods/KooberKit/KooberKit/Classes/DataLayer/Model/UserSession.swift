@@ -18,6 +18,6 @@ extension UserSession: Equatable {
     // lhs, rhs 是一个非常通用的命名方式.
     public static func ==(lhs: UserSession, rhs: UserSession) -> Bool {
         return lhs.profile == rhs.profile &&
-                lhs.remoteSession == rhs.remoteSession
+        lhs.remoteSession == rhs.remoteSession
     }
 }

@@ -7,7 +7,8 @@ public struct RideOption: Equatable, Identifiable, Decodable {
     // MARK: - Properties
     public var id: RideOptionID
     public var name: String
-    public var buttonRemoteImages: (selected: RemoteImage, unselected: RemoteImage) // 当, 结构固定的时候, 使用元组. 
+    // 当, 结构固定的时候, 使用元组. 节省类型的定义.
+    public var buttonRemoteImages: (selected: RemoteImage, unselected: RemoteImage)
     public var availableMapMarkerRemoteImage: RemoteImage
     
     // MARK: - Methods

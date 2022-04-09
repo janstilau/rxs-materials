@@ -8,10 +8,8 @@ import PromiseKit
  func signIn(email: String, password: String) -> Promise<UserSession>
  func signOut(userSession: UserSession) -> Promise<UserSession>
  
- 实现了上面的协议.
- 具体如何实现的, 是通过本地读取, 以及网络请求两种方式.
- 将这两部分, 又通过接口进行了抽象.
- 由外部传入应该应该依赖的具体对象, 在内部仅仅使用, 抽象出来的接口.
+ UserSessionRepository 抽象出了, 如何本地数据访问, 以及网络请求访问两个功能点.
+ 
  */
 public class KooberUserSessionRepository: UserSessionRepository {
     
