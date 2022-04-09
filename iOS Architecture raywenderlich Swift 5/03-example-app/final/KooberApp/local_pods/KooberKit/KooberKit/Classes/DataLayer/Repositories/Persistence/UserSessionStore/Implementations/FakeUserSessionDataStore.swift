@@ -2,10 +2,9 @@
 import Foundation
 import PromiseKit
 
-// 因为, UserSessionDataStore 是一个接口, 使用到的地方, 也是用接口的方式使用的.
-// 所以, 方便了测试, 可以专门写一个接口类, 专门进行测试. 只要他实现了接口要求的值就可以了.
-
-// Promise 这种方式, 使得原本的闭包传递, 变为了同步的回调注册的机制.
+// Fake 就是为了方便开发的, 所有, 它可以暴露出各种属性出来, 这些属性, 就是为了能够方便的按照 dev 的需求, 来影响内部实现的.
+// 这是没有问题的, 使用 Fake 的时候, 就应该默认, 是完全了解其中的内部实现, 来使用这个类的.
+// 当然, 实现类, 必须完成, 接口里面实现的所有接口.
 public class FakeUserSessionDataStore: UserSessionDataStore {
     
     // MARK: - Properties
@@ -21,13 +20,12 @@ public class FakeUserSessionDataStore: UserSessionDataStore {
         return .value(userSession)
     }
     
+    // Delete, 直接返回原始值, 代表着删除成功了.
     public func delete(userSession: UserSession) -> Promise<(UserSession)> {
         return .value(userSession)
     }
     
-    // 这是一个 Fake 类, 所以其实除了实现的接口, 还是可以有自己的成员变量的
-    // 这些成员变量, 就是为了影响这些接口的实现.
-    // 在生成的时候, 配置这些, 可以达到, 使用测试数据, 影响接口的效果. 
+    // 根据, 成员变量的配置结果, 来返回不同的实现.
     public func readUserSession() -> Promise<UserSession?> {
         switch hasToken {
         case true:
@@ -37,6 +35,7 @@ public class FakeUserSessionDataStore: UserSessionDataStore {
         }
     }
     
+    // 返回用户数据.
     public func runHasToken() -> Promise<UserSession?> {
         print("Try to read user session from fake disk...")
         print("  simulating having user session with token 4321...")
@@ -46,6 +45,7 @@ public class FakeUserSessionDataStore: UserSessionDataStore {
         return .value(UserSession(profile: profile, remoteSession: remoteSession))
     }
     
+    // 不返回用户数据. 
     func runDoesNotHaveToken() -> Promise<UserSession?> {
         print("Try to read user session from fake disk...")
         print("  simulating empty disk...")
