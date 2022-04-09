@@ -2,6 +2,16 @@ import UIKit
 import KooberUIKit
 import KooberKit
 
+/*
+ 应该明白, Repository 里面, 不同层级的意义.
+ Repository 是业务相关的, 它封装的, 是这个业务相关的存储相关的操作.
+ 而下面的各个文件是具体的实现. 文件存储, 网络请求, 这都是 Repository 的工具对象 .
+ 这些工具对象, 被 Repository 使用, 来完成各个 Repository 的接口的实现.
+ 
+ 传入给 Repository 不同的工具对象, Repository 就可以有不同的实现逻辑.
+ 
+ */
+
 public class KooberPickMeUpDependencyContainer {
     
     // MARK: - Properties

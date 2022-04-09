@@ -1,6 +1,8 @@
 import Foundation
 import PromiseKit
 
+// 项目里面, 没有给出真实的 Locator 出来.
+// 真实的, 一定是调用系统的 API .
 public class FakeLocator: Locator {
     
     // MARK: - Methods
