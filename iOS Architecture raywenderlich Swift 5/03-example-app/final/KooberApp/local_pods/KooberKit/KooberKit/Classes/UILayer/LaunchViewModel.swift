@@ -3,7 +3,9 @@ import PromiseKit
 import RxSwift
 
 // ViewModel, 是 Controller 层的.
-// 所以在里面, 有各种的逻辑操作, 是正常的. 
+// 所以在里面, 有各种的逻辑操作, 是正常的.
+// 从现在项目的书写来看, 是将所有的逻辑, 都写到了 ViewModel 里面了. 然后, 通过信号将这些数据的变化事件, 传递给了外界.
+// VC 中, 直接使用这些信号, 进行后续功能的回调注册.
 public class LaunchViewModel {
     
     // MARK: - Properties

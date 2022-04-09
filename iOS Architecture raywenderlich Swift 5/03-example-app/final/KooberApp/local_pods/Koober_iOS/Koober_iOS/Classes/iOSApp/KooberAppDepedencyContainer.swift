@@ -25,6 +25,7 @@ public class KooberAppDependencyContainer {
         
         func makeUserSessionDataStore() -> UserSessionDataStore {
             
+// 通过编译命令, 进行编译器的依赖注入修改.
 #if USER_SESSION_DATASTORE_FILEBASED
             return FileUserSessionDataStore()
 #else
@@ -65,6 +66,9 @@ public class KooberAppDependencyContainer {
     // Main
     // Factories needed to create a MainViewController.
     
+    /*
+     这是一个 Public 方法. 在里面, 调用了各种, MainViewController 所需要的依赖, 然后使用 init 方法, 生成真正的 MainViewController.
+     */
     public func makeMainViewController() -> MainViewController {
         let launchViewController = makeLaunchViewController()
         
