@@ -39,7 +39,8 @@ class TimelineFetcher {
     // ViewModel 里面, 有重的一部分工作, 就是将外界传入的 Observable, 按照自己的逻辑, 转变成为 View 层需要的 Observable.
     
     // 账号改变的 Publisher
-    let currentAccount: Observable<AccessToken> = account
+    let currentAccount: Observable<AccessToken> =
+    account
       .filter { account in
         switch account {
         case .authorized: return true
@@ -70,6 +71,7 @@ class TimelineFetcher {
       Reachability.rx.reachable,
       currentAccount,
       paused.asObservable(),
+      
       resultSelector: { _, reachable, account, paused in
         return (reachable && !paused) ? account : nil
       })

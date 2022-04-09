@@ -12,7 +12,14 @@ public enum RxURLSessionError: Error {
 
 extension Reactive where Base: URLSession {
     
+    // 使用 Observable, 很少使用 Bool 来进行结果的判断. 因为 Event 天然就是有着 Bool 值的逻辑.
     func response(request: URLRequest) -> Observable<(HTTPURLResponse, Data)> {
+        
+        /*
+         Observable.create 和 Promise 的构建是一样的.
+         创建一个对象, 存储了各种回调, 然后通过改变自身的状态, 来触发这些回调.
+         所以, 闭包里面的参数, 就是能够改变这个对象状态的一个工具对象.
+         */
         return Observable.create { observer in
             // content goes here
             let task = self.base.dataTask(with: request) { data, response, error in
@@ -38,11 +45,16 @@ extension Reactive where Base: URLSession {
     }
     
     func data(request: URLRequest) -> Observable<Data> {
+        // 这里有缓存的使用.
         if let url = request.url?.absoluteString,
            let data = internalCache[url] {
+            // Just 很像是变量, 可以直接进行使用.
+            // 这里直接返回了, 那么整个响应链条, 就不会走向 response, cache, map 了. 直接在这里就中断了
+            //  Observable.just(data) 是整个响应链条的头结点. 
             return Observable.just(data)
         }
         
+        // 这里的 map 的作用, 是丢弃 response 这个值.
         return response(request: request).cache().map { response, data -> Data in
             guard 200 ..< 300 ~= response.statusCode else {
                 throw RxURLSessionError.requestFailed(response: response, data: data)
@@ -80,11 +92,13 @@ extension Reactive where Base: URLSession {
 }
 
 extension ObservableType where Element == (HTTPURLResponse, Data) {
+    
     func cache() -> Observable<Element> {
+        // do, 是一个完全不会影响到数据传递的一个 Operator.
+        // 所以, 它是一个进行副作用的良好的场所. 
         return self.do(onNext: { response, data in
             guard let url = response.url?.absoluteString,
                   200 ..< 300 ~= response.statusCode else { return }
-            
             internalCache[url] = data
         })
     }

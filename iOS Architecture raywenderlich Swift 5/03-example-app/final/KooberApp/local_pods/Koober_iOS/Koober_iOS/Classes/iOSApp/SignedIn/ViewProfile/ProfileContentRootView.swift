@@ -20,7 +20,6 @@ class ProfileContentRootView: NiblessView {
         self.viewModel = viewModel
         super.init(frame: frame)
         
-        // 超级烂的写法, 让人摸不清头脑. 
         [tableView].forEach(addSubview)
         
         tableView.dataSource = self
@@ -57,6 +56,7 @@ extension ProfileContentRootView: UITableViewDataSource, UITableViewDelegate {
         return cell!
     }
     
+    // ViewModel 暴露, 在 ViewAction 中, 调用 ViewModel 的方法, 做实际的 model 修改.
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1,
@@ -72,6 +72,7 @@ extension ProfileContentRootView: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
+    // ViewModel 暴露, View 相关的显示逻辑. 
     func content(forIndexPath indexPath: IndexPath) -> String {
         switch indexPath.section {
         case 0:

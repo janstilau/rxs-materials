@@ -49,7 +49,8 @@ public class KooberPickMeUpDependencyContainer {
   let pickMeUpViewModel: PickMeUpViewModel
 
   // MARK: - Methods
-  init(signedInDependencyContainer: KooberSignedInDependencyContainer, pickupLocation: Location) {
+  init(signedInDependencyContainer: KooberSignedInDependencyContainer,
+       pickupLocation: Location) {
     func makePickMeUpMapViewModel() -> PickMeUpMapViewModel {
       return PickMeUpMapViewModel(pickupLocation: pickupLocation)
     }
