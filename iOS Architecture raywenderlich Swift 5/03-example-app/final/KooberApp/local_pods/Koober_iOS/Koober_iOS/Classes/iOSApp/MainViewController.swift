@@ -19,6 +19,8 @@ public class MainViewController: NiblessViewController {
     let disposeBag = DisposeBag()
     
     // Factories
+    // 没有, 在外界创建后传入, 而是将生成方法传入.
+    // 如果登录了, 没有必要生成 OnboardingViewController, SignedInViewController
     let makeOnboardingViewController: () -> OnboardingViewController
     let makeSignedInViewController: (UserSession) -> SignedInViewController
     
@@ -35,7 +37,7 @@ public class MainViewController: NiblessViewController {
         super.init()
     }
     
-    public func present(_ view: MainView) {
+    public func present(_ view: MainViewState) {
         switch view {
         case .launching:
             presentLaunching()
@@ -59,6 +61,7 @@ public class MainViewController: NiblessViewController {
         }
     }
     
+    // 一定会触发该操作. 把 launchViewController 添加到屏幕上. 
     public func presentLaunching() {
         addFullScreen(childViewController: launchViewController)
     }
@@ -107,13 +110,6 @@ public class MainViewController: NiblessViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        /*
-         ViewModel 的初始值是 Launching. 所以这里的代码, 一定会触发 Present, 把 LaunchVC 展示出来.
-         LaunchVC 里面, 读取当前本地的用户数据, 判断是否登录, 然后会改变 ViewModel 的状态, 触发 View Publisher 发出新的信号, 引起了
-         MainViewController 的界面切换.
-         这种信号发射的统一的方式, 让代码不直观了, 是一种更加松耦合的对象之间交互的方法, 但是不直观, 因为最直观的代码, 还是指令式的线性执行代码.
-         需要熟悉.
-         */
         viewModel.view
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] view in

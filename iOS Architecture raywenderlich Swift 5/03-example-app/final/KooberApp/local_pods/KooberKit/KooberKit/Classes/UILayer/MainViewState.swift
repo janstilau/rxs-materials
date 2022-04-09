@@ -1,15 +1,15 @@
 import Foundation
 
-public enum MainView {
+public enum MainViewState {
     
     case launching
     case onboarding
     case signedIn(userSession: UserSession)
 }
 
-extension MainView: Equatable {
+extension MainViewState: Equatable {
     
-    public static func ==(lhs: MainView, rhs: MainView) -> Bool {
+    public static func ==(lhs: MainViewState, rhs: MainViewState) -> Bool {
         switch (lhs, rhs) {
         case (.launching, .launching):
             return true

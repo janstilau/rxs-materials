@@ -36,7 +36,7 @@ public class KooberAppDependencyContainer {
             return UserSessionPropertyListCoder()
         }
         
-        // 将, 如何进行网络请求, 从类内创建, 变为了外界传入. 
+        // 这是一个工厂类. 所以, 直接在这里, 进行对应的工具类对象的生成.
         func makeAuthRemoteAPI() -> AuthRemoteAPI {
             return FakeAuthRemoteAPI()
         }
@@ -51,8 +51,6 @@ public class KooberAppDependencyContainer {
         func makeMainViewModel() -> MainViewModel {
             return MainViewModel()
         }
-        
-        
         
         /*
          在这个库里面, 将所有的 Init 方法, 写在了一起. 最后调用一个函数, 进行数据层的初始化的工作.
@@ -92,6 +90,12 @@ public class KooberAppDependencyContainer {
     }
     
     public func makeLaunchViewModel() -> LaunchViewModel {
+        // ViewModel 之间的通信, 没有使用具体的类型.
+        // 而是使用了抽象接口.
+        // LaunchuModel 里面, 调用 LoadUser 的操作, 获取到用户当前登录的数据.
+        // 然后, 通知自己的策略对象.
+        // 从策略对象就是 sharedMainViewModel, 在里面, 触发其他的信号.
+        // VC 里面, 根据信号, 进行其他的后续操作. 
         return LaunchViewModel(userSessionRepository: sharedUserSessionRepository,
                                notSignedInResponder: sharedMainViewModel,
                                signedInResponder: sharedMainViewModel)

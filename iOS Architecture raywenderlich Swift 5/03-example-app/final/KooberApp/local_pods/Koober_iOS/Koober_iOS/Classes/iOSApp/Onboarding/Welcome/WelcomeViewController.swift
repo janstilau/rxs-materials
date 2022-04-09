@@ -30,6 +30,7 @@ import UIKit
 import KooberUIKit
 import KooberKit
 
+// VC 里面, 逻辑大大的减少. 
 public class WelcomeViewController: NiblessViewController {
 
   // MARK: - Properties

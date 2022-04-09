@@ -7,7 +7,9 @@ public class OnboardingViewModel: GoToSignUpNavigator,
                                   GoToSignInNavigator {
     
     // MARK: - Properties
-    public var view: Observable<OnboardingNavigationAction> { return _view.asObservable() }
+    public var view: Observable<OnboardingNavigationAction> {
+        return _view.asObservable() }
+    
     private let _view = BehaviorSubject<OnboardingNavigationAction>(value: .present(view: .welcome))
     
     // MARK: - Methods

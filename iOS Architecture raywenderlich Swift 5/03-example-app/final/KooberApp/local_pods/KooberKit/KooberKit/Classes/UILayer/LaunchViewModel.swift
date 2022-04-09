@@ -34,8 +34,8 @@ public class LaunchViewModel {
     
     // Model Action. 触发 Model 的改变, 然后发送信号.
     public func loadUserSession() {
-        // Done 代表着, 没有后续的 Then 需要进行添加了. 所以, Promise 中绑定的值是 Void
-        // Done 应该算作 Promise 响应链的最后一条, 正常的业务处理逻辑.
+        // 在 VC 中, 主动调用 ViewModel 的 ModelAction, 进行数据的改变, 触发后续 UI 更新的信号.
+        // 这里的信号, 是通过 goToNextScreen 发出的
         userSessionRepository.readUserSession()
         // goToNextScreen(userSession:) 是接收 UserSession? 当做参数的对象, 直接在 Done 中使用.
             .done(goToNextScreen(userSession:))
