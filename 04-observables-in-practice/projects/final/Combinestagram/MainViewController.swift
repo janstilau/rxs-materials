@@ -10,6 +10,8 @@ class MainViewController: UIViewController {
     @IBOutlet weak var itemAdd: UIBarButtonItem!
     
     private let bag = DisposeBag()
+    // 可以看到, 在教材里面, 也没有使用 Singal, 或者 Publisher 这样特殊的概念去命名变量.
+    // 就是当做普通的成员变量在使用.
     private let images = BehaviorRelay<[UIImage]>(value: [])
     
     override func viewDidLoad() {
@@ -25,6 +27,9 @@ class MainViewController: UIViewController {
             .disposed(by: bag)
         
         // 信号的触发, 导致了后面的 UI 更新的
+        // 由于 Images 是一个 BehaviorValue, 所以在第一次 subscribe 的时候, 也能触发里面的 next closure 逻辑
+        // 这就使得构建监听和实际监听, 是同样的一套逻辑. 更新逻辑在统一的地方.
+        // 这和自己, ViewDidLoad 里面, 调用 update, 和各种 Model 修改之后, 调用 update, 是同样的一套思路.
         images
             .subscribe(onNext: { [weak self] photos in
                 self?.updateUI(photos: photos)
@@ -42,6 +47,12 @@ class MainViewController: UIViewController {
     @IBAction func actionSave() {
         guard let image = imagePreview.image else { return }
         
+        /*
+         原有的异步操作, 也变为了返回一个 Observable 的方式. 通过注册回调, 使得这个异步操作, 可以构建出多个 PipeLine.
+         不同的回调, 分别注册, 使得回调这件事, 不在需要单一的入口, 代码组织起来更加的清晰. 当然, 也不好追踪了.
+         
+         这是一种统一的进行交互的方式, 不论同步异步, 数据格式, 都可以封装成为这样的方式 .
+         */
         PhotoWriter.save(image)
             .asSingle()
         // 只有调用了 asSingle 之后, 才能调用下面的方法.
@@ -67,20 +78,9 @@ class MainViewController: UIViewController {
             withIdentifier: "PhotosViewController") as! PhotosViewController
         navigationController!.pushViewController(photosViewController, animated: true)
         
-        // Photo 的点击事件, 会发射出新的图片过来.
-        // 在它的处理办法里面, 是将新发射的图片, 存储到成员变量 Subject 里面.
-        // self.images 链接自己的回调函数.
-        
-        /*
-         整个处理逻辑, 变为了 信号触发, 信号的回调触发, 在信号的回调里面, 引起新的信号的触发,
-         整个逻辑处理, 增加了信号这个抽象层, 好处是解耦, 但是增加了理解的难度.
-         
-         整个逻辑, 是存储在了 selectedPhotos 的内部. 如果 selectedPhotos 消亡了, 引用关系也就消亡了.
-         */
-        
-        // 如果, selectedPhotos 后面直接 subscribe, 那么 AnonymousObserver 可以消亡. 因为 AnonymousObserver 没有生成 Sink 这种自引用对象存在.
-        // 但是一旦中间有一个 Sink, 那么后面的 AnonymousObserver 其实是存在 Sink 的 Observer 里面. 这个时候, Sink 是自引用的, 就会导致如果没有 StopEvent, 这个 subscription 就不会被 dispose 了.
-        // 那这样就会有循环引用的了.
+        // 就和信号槽机制一样. 这是一种统一进行对象之间交互的方式.
+        // 不用再有 delegate, notification, block 的注册 各种各样触发回调的方式了.
+        // 也不会有内存问题. photosViewController 和 self 没有引用关系, 各种内存, 都是在 selectedPhotos 进行引用. 
         photosViewController.selectedPhotos
             .do(onNext: { _ in
             print("Do On Next")

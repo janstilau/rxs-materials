@@ -30,6 +30,12 @@ class PhotosViewController: UICollectionViewController {
      所以, 只要能够在自己的业务模块里面, hold 的住, 那么还是在命令式世界还是可以的. 但是, 总要有一个办法, 进行响应式的触发.
      Subject 就是完美可以干这个事情的.
      */
+    
+    /*
+     Subject 比较特殊, 它在整个 PineLine 中, 有可能是头结点, 也有可能是中间节点.
+     如果是中间节点, 不会出现自己内存消亡的情况. 如果是头结点, 比如现在的情况, 可能会自己先消亡.
+     但是 Subject 的 deinit 不会触发 complete 信号. 这个信号, 还是要专门的触发一下才可以 .
+     */
     private let selectedPhotosSubject = PublishSubject<UIImage>()
     
     // 不可能脱离原有命令式的世界的, 还是需要使用系统 Api, 进行数据的加载工作.
@@ -45,7 +51,6 @@ class PhotosViewController: UICollectionViewController {
     }()
     
     // 在界面结束的时候, 主动发送了结束的事件.
-    // 感觉没有太大必要.
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         selectedPhotosSubject.onCompleted()
