@@ -11,7 +11,7 @@ class PhotoCell: UICollectionViewCell {
     }
     
     // 当, 被点击了之后, 会主动调用该接口, 做一次 Cell 的刷新动作.
-    // 视觉效果就是闪光一下. 一般来说, 闪光效果, 就是 alpha 值的变化. 
+    // 视觉效果就是闪光一下. 一般来说, 闪光效果, 就是 alpha 值的变化.
     func flash() {
         imageView.alpha = 0
         setNeedsDisplay()

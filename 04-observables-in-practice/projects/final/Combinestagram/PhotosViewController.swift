@@ -16,14 +16,20 @@ extension PhotosViewController {
 class PhotosViewController: UICollectionViewController {
     
     // MARK: public properties
-    // 但是, 是
+    //
     var selectedPhotos: Observable<UIImage> {
         return selectedPhotosSubject.asObservable()
     }
     
     // 对于模块内来说, 需要使用 Subject 这种类型, 做真正的成员变量的保存工作.
     // Subject 其实就是普通的变量, 实现了 Observable, Observer 的两套接口.
-    // 使用 Subject 进行值的变化的时候, 能够主动地进行信号的发送.
+    
+    /*
+     Subject, 是命令式世界转向响应式世界的接口.
+     实际上, 不可避免的还是要使用各种命令式的 API, 但是我们要暴露响应式的接口给外界.
+     所以, 只要能够在自己的业务模块里面, hold 的住, 那么还是在命令式世界还是可以的. 但是, 总要有一个办法, 进行响应式的触发.
+     Subject 就是完美可以干这个事情的.
+     */
     private let selectedPhotosSubject = PublishSubject<UIImage>()
     
     // 不可能脱离原有命令式的世界的, 还是需要使用系统 Api, 进行数据的加载工作.
@@ -42,7 +48,7 @@ class PhotosViewController: UICollectionViewController {
     // 感觉没有太大必要.
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        selectedPhotosSubject.onCompleted()
+        selectedPhotosSubject.onCompleted()
     }
     
     override func viewDidLoad() {
@@ -85,6 +91,7 @@ class PhotosViewController: UICollectionViewController {
             
             if let isThumbnail = info[PHImageResultIsDegradedKey as NSString] as?
                 Bool, !isThumbnail {
+                
                 // 在点击了之后, 主动发出信号.
                 // 其实, 就是通知外界, 新的图片被选中了. 不过使用信号的这种方式, 将交互这件事, 做到了机制上的统一.
                 self?.selectedPhotosSubject.onNext(image)

@@ -102,6 +102,8 @@ class MainViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    // UI 控价的更新. 和 合成 Image 展示 Image 是两码事.
+    // 响应式的好处也在这里, 建立多条响应管道, 可以让代码更加的清晰.
     private func updateUI(photos: [UIImage]) {
         buttonSave.isEnabled = photos.count > 0 && photos.count % 2 == 0
         buttonClear.isEnabled = photos.count > 0

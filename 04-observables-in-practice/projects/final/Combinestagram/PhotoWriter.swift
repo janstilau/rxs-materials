@@ -8,10 +8,11 @@ class PhotoWriter {
         case couldNotSavePhoto
     }
     
-    // Observable.create 提供了一种, 统一的方式, 将原本的命令式逻辑, 封装成为 Observable 的逻辑.
     /*
-     它的实现是, 使用一个 Sink, 当做真正的状态更改的节点. 就是传入的 observer 对象.
-     create 传入的闭包内, 在合适的时机, 真正的触发状态改变的 on 方法.
+     这种方式, 作为统一的基础, 是所有的返回值, 是使用 Observable 这种类型.
+     因为外界是需要这个返回值, 来注册回调的.
+     这其实也就为什么这个框架重的愿意了.
+     只要使用了这个框架, 那么所有的接口, 都要使用返回值为 Observable 的形式, 外界模块要和这个库交互的话, 就很有可能被迫使用这个框架. 
      */
     static func save(_ image: UIImage) -> Observable<String> {
         return Observable.create { observer in
@@ -27,6 +28,7 @@ class PhotoWriter {
                         observer.onNext(id)
                         observer.onCompleted()
                     } else {
+                        // 在合适的地方, 触发状态改变的修改.
                         observer.onError(error ?? Errors.couldNotSavePhoto)
                     }
                 }
