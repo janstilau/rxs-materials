@@ -8,11 +8,11 @@ class PhotoWriter {
   enum Errors: Error {
     case couldNotSavePhoto
   }
-  
+
   // 从, 原有的 Observable, 变为了 Single 类了.
   static func save(_ image: UIImage) -> Single<String> {
     return Single.create(subscribe: { observer in
-      
+
       var savedAssetId: String?
       PHPhotoLibrary.shared().performChanges({
         let request = PHAssetChangeRequest.creationRequestForAsset(from: image)

@@ -3,20 +3,20 @@ import RxSwift
 import RxRelay
 
 class MainViewController: UIViewController {
-  
+
   @IBOutlet weak var imagePreview: UIImageView!
   @IBOutlet weak var buttonClear: UIButton!
   @IBOutlet weak var buttonSave: UIButton!
   @IBOutlet weak var itemAdd: UIBarButtonItem!
-  
+
   private let bag = DisposeBag()
   private let images = BehaviorRelay<[UIImage]>(value: [])
-  
+
   private var imageCache = [Int]()
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     images
       .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
       .subscribe(onNext: { [weak imagePreview] photos in
@@ -24,22 +24,22 @@ class MainViewController: UIViewController {
         preview.image = photos.collage(size: preview.frame.size)
       })
       .disposed(by: bag)
-    
+
     images
       .subscribe(onNext: { [weak self] photos in
         self?.updateUI(photos: photos)
       })
       .disposed(by: bag)
   }
-  
+
   @IBAction func actionClear() {
     images.accept([])
     imageCache = []
   }
-  
+
   @IBAction func actionSave() {
     guard let image = imagePreview.image else { return }
-    
+
     PhotoWriter.save(image)
       .subscribe(
         onSuccess: { [weak self] id in
@@ -52,23 +52,23 @@ class MainViewController: UIViewController {
       )
       .disposed(by: bag)
   }
-  
+
   @IBAction func actionAdd() {
     // images.accept(images.value + [UIImage(named: "IMG_1907.jpg")!])
-    
+
     let photosViewController = storyboard!.instantiateViewController(
       withIdentifier: "PhotosViewController") as! PhotosViewController
-    
+
     navigationController!.pushViewController(photosViewController, animated: true)
-    
+
     // 通过查看源码, 知道 selectedPhotos 其实是一个 SUBJECT, 而 Subject 是默认具有 share 属性的.
     // 但是, 使用者并不知道, 所以, 在合适的时候, 应该明显的调用 share
     let newPhotos = photosViewController.selectedPhotos
       .share()
-    
+
     newPhotos
     // TakWhile, 当 Predicate return True 的时候, 才会 forward 当前的 event.
-      .takeWhile { [weak self] image in
+      .takeWhile { [weak self] _ in
         let count = self?.images.value.count ?? 0
         return count < 6
       }
@@ -98,7 +98,7 @@ class MainViewController: UIViewController {
         }
       )
       .disposed(by: bag)
-    
+
     newPhotos
     // 这里体现了 ignoreElements 的作用.
     // 不关心 next 事件, 仅仅关心 complete 事件.
@@ -110,22 +110,22 @@ class MainViewController: UIViewController {
       })
       .disposed(by: bag)
   }
-  
+
   private func updateNavigationIcon() {
     let icon = imagePreview.image?
       .scaled(CGSize(width: 22, height: 22))
       .withRenderingMode(.alwaysOriginal)
-    
+
     navigationItem.leftBarButtonItem = UIBarButtonItem(image: icon,
                                                        style: .done, target: nil, action: nil)
   }
-  
+
   func showMessage(_ title: String, description: String? = nil) {
     alert(title: title, text: description)
       .subscribe()
       .disposed(by: bag)
   }
-  
+
   private func updateUI(photos: [UIImage]) {
     buttonSave.isEnabled = photos.count > 0 && photos.count % 2 == 0
     buttonClear.isEnabled = photos.count > 0
